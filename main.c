@@ -19,12 +19,12 @@ int main() {
     char *maze = calloc(mazeSize, sizeof(char));
 
     //zapelniam zmienna maze, start i end
-    getData(PLIK, maze, &rows, &cols, &start, &end);
+    getData(PLIK, maze, cols, &start, &end);
 
     printf("Rozmiar labiryntu: %d x %d\nwspolrzedna wejscia: %d\nwspolrzedna wyjscia: %d\n", rows, cols, start, end);
-    
+    printf("Rozmiar zmiennej maze: %ld\n", sizeof(maze));
     //wypisuje labirynt
-    printMaze(maze, cols, mazeSize);
+    //printMaze(maze, cols, mazeSize);
 
     free(maze);
 

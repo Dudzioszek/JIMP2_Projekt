@@ -34,7 +34,7 @@ void checkSize(const char* filename, int* rows, int* cols) {
 
 }
 
-void getData(const char* filename, char *maze, int* rows, int* cols, int* start, int* end) {
+void getData(const char* filename, char *maze, int cols, int* start, int* end) {
 
     // Otwarcie pliku
     FILE *file = fopen(filename, "r");
@@ -44,7 +44,7 @@ void getData(const char* filename, char *maze, int* rows, int* cols, int* start,
     }
 
     //tworze zmienna pomocnicza line
-    char *line = (char*)malloc((*cols) * sizeof(char) + 1); // Allocate memory for the line
+    char *line = (char*)malloc(cols * sizeof(char) + 1); // Allocate memory for the line
     if (line == NULL) {
         perror("Błąd alokacji pamięci");
         exit(EXIT_FAILURE);
@@ -54,10 +54,10 @@ void getData(const char* filename, char *maze, int* rows, int* cols, int* start,
     int temp_col, temp_row = 0, index;
 
     //zapisuje w zmiennej maze kolejne elementy labiryntu
-    while (fgets(line, (*cols) + 2, file)) {
+    while (fgets(line, cols + 2, file)) {
         temp_col = 0;
-        while (temp_col < (*cols)) {
-            index = temp_row * (*cols) + temp_col;  // Obliczenie indeksu w tablicy jednowymiarowej
+        while (temp_col < cols) {
+            index = temp_row * cols + temp_col;  // Obliczenie indeksu w tablicy jednowymiarowej
             
             //jesli znajde P lub K to zapisuje w start lub end
             if(line[temp_col] == 'P') (*start) = index;
