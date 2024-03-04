@@ -2,7 +2,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void loadMaze(const char* filename, char maze[MAZE_SIZE], int* rows, int* cols) {
+void checkSize(const char* filename, int* rows, int* cols) {
+    // Otwarcie pliku
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Nie można otworzyć pliku");
+        exit(EXIT_FAILURE);
+    }
+
+    //zczytuje liczbe kolumn
+    while (getc(file) != '\n') {
+        (*cols)++;
+    }
+
+    //tworze zmienna pomocnicza line
+    char *line = (char*)malloc((*cols) * sizeof(char) + 1); // Allocate memory for the line
+    if (line == NULL) {
+        perror("Błąd alokacji pamięci");
+        exit(EXIT_FAILURE);
+    }
+
+    //zczytuje liczbe wierszy
+    (*rows)++;
+    while (fgets(line, (*cols) + 2, file) != NULL) {
+        (*rows)++;
+    }
+
+    fclose(file);
+    //zwalniam pamiec po line
+    free(line); 
+
+}
+
+void getData(const char* filename, char *maze, int* rows, int* cols, int* start, int* end) {
 
     // Otwarcie pliku
     FILE *file = fopen(filename, "r");
@@ -11,31 +43,32 @@ void loadMaze(const char* filename, char maze[MAZE_SIZE], int* rows, int* cols) 
         exit(EXIT_FAILURE);
     }
 
-    char line[MAX_SIZE + 2]; // +2 dla '\n' i '\0'
-    int row = 0;
-    *cols = 0;  // Zainicjowanie liczby kolumn na 0
-
-    while (fgets(line, sizeof(line), file)) {
-        int col = 0;
-        while (line[col] != '\n' && line[col] != '\0') {
-            int index = row * MAX_SIZE + col;  // Obliczenie indeksu w tablicy jednowymiarowej
-            maze[index] = line[col];
-            col++;
-        }
-        if (*cols < col) *cols = col;
-        row++;
+    //tworze zmienna pomocnicza line
+    char *line = (char*)malloc((*cols) * sizeof(char) + 1); // Allocate memory for the line
+    if (line == NULL) {
+        perror("Błąd alokacji pamięci");
+        exit(EXIT_FAILURE);
     }
-    *rows = row;
+
+    //tymczasowa kolumna i rzad
+    int temp_col, temp_row = 0, index;
+
+    //zapisuje w zmiennej maze kolejne elementy labiryntu
+    while (fgets(line, (*cols) + 2, file)) {
+        temp_col = 0;
+        while (temp_col < (*cols)) {
+            index = temp_row * (*cols) + temp_col;  // Obliczenie indeksu w tablicy jednowymiarowej
+            
+            //jesli znajde P lub K to zapisuje w start lub end
+            if(line[temp_col] == 'P') (*start) = index;
+            if(line[temp_col] == 'K') (*end) = index;
+            
+            maze[index] = line[temp_col];
+            temp_col++;
+        }
+        temp_row++;
+    }
 
     fclose(file);
-}
-
-void printMaze(const char maze[MAZE_SIZE], int rows, int cols) {
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            int index = i * MAX_SIZE + j;  // Obliczenie indeksu w tablicy jednowymiarowej
-            printf("%c", maze[index]);
-        }
-        printf("\n");
-    }
+    free(line); 
 }
