@@ -16,12 +16,16 @@ typedef struct CharStack {
 CharStack* createCharStack();
 
 // Dodaje element na wierzchołek stosu
-void pushChar(CharStack* stack, char data);
+void pushChar(CharStack*, char);
 
 // Usuwa i zwraca element z wierzchołka stosu
-void popCharMultiple(CharStack* stack, int x);
+void popCharMultiple(CharStack*, int);
+
+void returnTwoElem(CharStack*, char*, char*);
 
 // Usuwa x elementów ze stosu
-void deleteCharStack(CharStack* stack);
+void deleteCharStack(CharStack*);
+
+void printMoves(CharStack*, const char*);
 
 #endif // CHAR_STACK_H

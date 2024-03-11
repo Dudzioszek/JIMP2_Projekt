@@ -1,4 +1,5 @@
-#include "char_Stack.h"
+#include <stdio.h>
+#include "char_stack.h"
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -25,7 +26,7 @@ void pushChar(CharStack* stack, char data) {
     stack->top = newNode;
 }
 
-// Usuwa i zwraca element z wierzchołka stosu. 
+// Usuwa x elementów ze stosu. 
 void popCharMultiple(CharStack* stack, int x) {
     CharStackNode* temp;
     while (x-- > 0 && stack->top != NULL) {
@@ -35,11 +36,43 @@ void popCharMultiple(CharStack* stack, int x) {
     }
 }
 
+//Zwraca dwa elementy ze stosu
+void returnTwoElem(CharStack* stack, char* element1, char* element2) {
+    CharStackNode* topNode = stack->top;
+    *element1 = topNode->data;
+    *element2 = topNode->next->data;
+}
 
-// Zwraca wartość na wierzchołku stosu bez usuwania jej. 
+// Usuwa stos. 
 void deleteCharStack(CharStack* stack) {
     while (stack->top != NULL) {
         popCharMultiple(stack, 1);
     }
     free(stack);
+}
+
+// Wypisuje wszystkie elementy stosu do pliku
+void printMoves(CharStack* stack, const char* filename) {
+    // Otwórz plik do zapisu
+    FILE* file = fopen(filename, "w");
+    if (file == NULL) {
+        fprintf(stderr, "Nie można otworzyć pliku do zapisu.\n");
+        return;
+    }
+
+    // Wypisz elementy stosu do pliku
+    int streak = 0;
+    CharStackNode* current = stack->top;
+    while (current != NULL) {
+        streak++;
+        if(current->next == NULL || current->data != current->next->data) {
+            fprintf(file, "%d %c\n", streak, current->data);
+            streak = 0;
+        }
+        current = current->next;
+    }
+
+    // Zamknij plik
+    fclose(file);
+
 }
