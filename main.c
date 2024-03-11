@@ -52,51 +52,35 @@ int main() {
     
     char currMove = firstMove(maze, &currCell, cols, mazeSize);
     
-    //kiedy program odwiedzi komórkę to zmienia ją z ' ' na 'V'
-    maze[currCell] = 'V';
+    //kiedy program odwiedzi komórkę to zmienia ją z ' ' na '-'
+    maze[currCell] = '-';
+    maze[start] = '-';
     currPathLen++;
 
     //dodaje ruch na stos
     pushChar(allMoves, currMove);
-
-    bool isNode = false;
 
     while(currCell != end) {
         //zbieram dane tj.: możliwe ruchy, ich liczba, współrzędne każdego z nich
         currMove = move(maze, directions, &nextCell, currCell, &routesCount, cols);
         switch(routesCount) {
             case 0:
-                //jeśli brak ruchów w węźle
-                if(isNode == true) {
-                    currCell = pop(nodes);
-                    printf("przed: %d\n", currPathLen);
-                    currPathLen = popShort(pathLens);
-                    //usuwam tyle ruchów, ile wynosi długość obecnej ścieżki
-                    popCharMultiple(allMoves, currPathLen);
-                }
-                else {
-                    //jeśli brak ruchów na końcu ścieżki
-                    printf("przed: %d\n", currPathLen);
-                    popCharMultiple(allMoves, currPathLen);
-                    currPathLen = 0;
-                    currCell = pop(nodes);
-                    isNode = true;
-                }
+                currCell = pop(nodes);
+                popCharMultiple(allMoves, currPathLen);
+                currPathLen = popShort(pathLens);
                 break;
             case 1:
-                isNode = false;
                 pushChar(allMoves, currMove);
                 currCell = nextCell;
-                maze[currCell] = 'V';
+                maze[currCell] = '-';
                 currPathLen++;
                 break;
             default:
-                isNode = false;
                 push(nodes, currCell);
                 pushShort(pathLens, currPathLen);
                 currPathLen = 1;
                 currCell = nextCell;
-                maze[currCell] = 'V';
+                maze[currCell] = '-';
                 pushChar(allMoves, currMove);
                 break;
         }
@@ -105,8 +89,9 @@ int main() {
     free(maze);
     deleteStack(nodes);
     deleteShortStack(pathLens);
-
-    printMoves(allMoves, OUT);
+    reverseCharStack(allMoves);
+    int k = printMoves(allMoves, OUT);
+    printf("Rozwiazanie sklada sie z %d ruchow\n", k);
     deleteCharStack(allMoves);
 
     return 0;
