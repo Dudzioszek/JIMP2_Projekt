@@ -59,11 +59,15 @@ void getData(const char* filename, char *maze, int cols, int* start, int* end) {
         while (temp_col < cols) {
             index = temp_row * cols + temp_col;  // Obliczenie indeksu w tablicy jednowymiarowej
             
+            maze[index] = line[temp_col];
+
             //jesli znajde P lub K to zapisuje w start lub end
             if(line[temp_col] == 'P') (*start) = index;
-            if(line[temp_col] == 'K') (*end) = index;
+            if(line[temp_col] == 'K') {
+                (*end) = index;
+                maze[index] = ' ';
+            }
             
-            maze[index] = line[temp_col];
             temp_col++;
         }
         temp_row++;
