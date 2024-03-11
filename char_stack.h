@@ -23,9 +23,12 @@ void popCharMultiple(CharStack*, int);
 
 void returnTwoElem(CharStack*, char*, char*);
 
+void reverseCharStack(CharStack* stack);
+
 // Usuwa x elementów ze stosu
 void deleteCharStack(CharStack*);
 
-void printMoves(CharStack*, const char*);
+//wypisuje ruchy do pliku, zwraca liczbe ruchow
+int printMoves(CharStack*, const char*);
 
 #endif // CHAR_STACK_H

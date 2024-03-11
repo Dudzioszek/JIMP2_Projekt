@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-
 // Inicjalizuje nowy stos
 CharStack* createCharStack() {
     CharStack* stack = (CharStack*)malloc(sizeof(CharStack));
@@ -13,7 +12,6 @@ CharStack* createCharStack() {
     stack->top = NULL;
     return stack;
 }
-
 
 // Dodaje element na wierzchołek stosu
 void pushChar(CharStack* stack, char data) {
@@ -51,8 +49,33 @@ void deleteCharStack(CharStack* stack) {
     free(stack);
 }
 
+void reverseCharStack(CharStack* stack) {
+    if (stack == NULL || stack->top == NULL || stack->top->next == NULL) {
+        // Stos jest pusty lub ma tylko jeden element, więc nie ma potrzeby odwracania
+        return;
+    }
+
+    CharStackNode *prevNode = NULL;
+    CharStackNode *currentNode = stack->top;
+    CharStackNode *nextNode = NULL;
+
+    while (currentNode != NULL) {
+        nextNode = currentNode->next; // Zapamiętaj następny element
+        currentNode->next = prevNode; // Odwróć wskaźnik na następny element
+
+        // Przesuń wskaźniki
+        prevNode = currentNode;
+        currentNode = nextNode;
+    }
+
+    // Popraw wskaźnik na wierzchołek stosu
+    stack->top = prevNode;
+}
+
+
 // Wypisuje wszystkie elementy stosu do pliku
-void printMoves(CharStack* stack, const char* filename) {
+int printMoves(CharStack* stack, const char* filename) {
+    int l_ruchow = 0;
     // Otwórz plik do zapisu
     FILE* file = fopen(filename, "w");
     if (file == NULL) {
@@ -64,6 +87,7 @@ void printMoves(CharStack* stack, const char* filename) {
     int streak = 0;
     CharStackNode* current = stack->top;
     while (current != NULL) {
+        l_ruchow++;
         streak++;
         if(current->next == NULL || current->data != current->next->data) {
             fprintf(file, "%d %c\n", streak, current->data);
@@ -75,4 +99,5 @@ void printMoves(CharStack* stack, const char* filename) {
     // Zamknij plik
     fclose(file);
 
+    return l_ruchow;
 }
