@@ -15,6 +15,8 @@ typedef struct CharStack {
 // Inicjalizuje nowy stos
 CharStack* createCharStack();
 
+char popChar(CharStack* stack);
+
 // Dodaje element na wierzchołek stosu
 void pushChar(CharStack*, char);
 

@@ -10,6 +10,48 @@
 #define IN "maze.txt"
 #define OUT "kroki.txt"
 
+void wypiszLab(char *maze, int row, int cols, const char *filename) {
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("Błąd otwarcia pliku do zapisu.\n");
+        return;
+    }
+
+    int mazeSize = row * cols;
+    int i = 0;
+    while (i < mazeSize) {
+        fprintf(file, "%c", maze[i]);
+        if ((i + 1) % cols == 0) fprintf(file, "\n");
+        i++;
+    }
+
+    fclose(file);
+}
+
+void dodajSciezke(char *maze, CharStack *moves, int start, int col) {
+    int cell = start;
+    char move = popChar(moves);
+
+    while(move != NULL) {
+        maze[cell] = '-';
+        switch(move) {
+                case 'N':
+                    cell -= col;
+                    break;
+                case 'S':
+                    cell += col;
+                    break;
+                case 'E':
+                    cell += 1;
+                    break;
+                case 'W':
+                    cell -= 1;
+                    break;
+            }
+            move = popChar(moves);
+        }
+}
+
 int main() {
     int rows = 0, cols = 0, start = 0, end = 0;
     // przechowuje dlugosc drogi od węzła do węzła
@@ -87,11 +129,16 @@ int main() {
     }
 
     free(maze);
+    //Dodatkowe testy:
+    maze = calloc(mazeSize, sizeof(char));
+    getData(IN, maze, cols, &start, &end);
+    reverseCharStack(allMoves);
+    dodajSciezke(maze, allMoves, start, cols);
+    wypiszLab(maze, rows, cols, "mazeOut");
+    //int k = printMoves(allMoves, OUT);
+    //printf("Rozwiazanie sklada sie z %d ruchow\n", k);
     deleteStack(nodes);
     deleteShortStack(pathLens);
-    reverseCharStack(allMoves);
-    int k = printMoves(allMoves, OUT);
-    printf("Rozwiazanie sklada sie z %d ruchow\n", k);
     deleteCharStack(allMoves);
 
     return 0;

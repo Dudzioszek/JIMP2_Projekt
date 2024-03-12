@@ -72,6 +72,18 @@ void reverseCharStack(CharStack* stack) {
     stack->top = prevNode;
 }
 
+char popChar(CharStack* stack) {
+    if (stack == NULL || stack->top == NULL) {
+        printf("Stos jest pusty!\n");
+        return '\0'; // Zwróć wartość domyślną dla typu char
+    }
+
+    CharStackNode* temp = stack->top;
+    char data = temp->data;
+    stack->top = temp->next;
+    free(temp);
+    return data;
+}
 
 // Wypisuje wszystkie elementy stosu do pliku
 int printMoves(CharStack* stack, const char* filename) {
