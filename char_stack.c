@@ -63,9 +63,6 @@ void reverseCharStack(CharStack* stack) {
         nextNode = currentNode->next; // Zapamiętaj następny element
         currentNode->next = prevNode; // Odwróć wskaźnik na następny element
 
-        // Zwolnij pamięć poprzedniego węzła, ponieważ nie będzie już używany
-        free(prevNode);
-
         // Przesuń wskaźniki
         prevNode = currentNode;
         currentNode = nextNode;
@@ -73,7 +70,7 @@ void reverseCharStack(CharStack* stack) {
 
     // Popraw wskaźnik na wierzchołek stosu
     stack->top = prevNode;
-}cj
+}
 
 
 // Wypisuje wszystkie elementy stosu do pliku
