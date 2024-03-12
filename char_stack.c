@@ -41,7 +41,7 @@ void returnTwoElem(CharStack* stack, char* element1, char* element2) {
     *element2 = topNode->next->data;
 }
 
-// Usuwa stos. 
+// Usuwa stos
 void deleteCharStack(CharStack* stack) {
     while (stack->top != NULL) {
         popCharMultiple(stack, 1);
@@ -63,9 +63,7 @@ void reverseCharStack(CharStack* stack) {
         nextNode = currentNode->next; // Zapamiętaj następny element
         currentNode->next = prevNode; // Odwróć wskaźnik na następny element
 
-        // Zwolnij pamięć poprzedniego węzła, ponieważ nie będzie już używany
-        free(prevNode);
-
+        
         // Przesuń wskaźniki
         prevNode = currentNode;
         currentNode = nextNode;
@@ -73,34 +71,65 @@ void reverseCharStack(CharStack* stack) {
 
     // Popraw wskaźnik na wierzchołek stosu
     stack->top = prevNode;
-}cj
+}
 
 
-// Wypisuje wszystkie elementy stosu do pliku
+// Funkcja pomocnicza do printmoves do zwracania nazwy kierunku podczas skrętu
+const char* getTurnDirection(char from, char to) {
+    if ((from == 'N' && to == 'E') || (from == 'E' && to == 'S') ||
+        (from == 'S' && to == 'W') || (from == 'W' && to == 'N')) {
+        return "TURNRIGHT";
+    } else {
+        return "TURNLEFT";
+    }
+}
+
+
+
 int printMoves(CharStack* stack, const char* filename) {
-    int l_ruchow = 0;
-    // Otwórz plik do zapisu
+
+    // Odwracanie stosu, aby ruchy były w kolejności od początku do końca
+    reverseCharStack(stack);
+
+    // Zakładamy że ścieżka patrzy się na wschód
+    char currentDirection = 'E';
+    int movesCount = 0;
+
+
+    // Otwieranie pliku do zapisu
     FILE* file = fopen(filename, "w");
     if (file == NULL) {
         fprintf(stderr, "Nie można otworzyć pliku do zapisu.\n");
-        return;
+        return -1;
     }
 
-    // Wypisz elementy stosu do pliku
-    int streak = 0;
+    // Wypisanie rozpoczęcia
+    fprintf(file, "START\n");
+
+    // Przechodzenie przez stos i drukowanie ruchów
     CharStackNode* current = stack->top;
     while (current != NULL) {
-        l_ruchow++;
-        streak++;
-        if(current->next == NULL || current->data != current->next->data) {
-            fprintf(file, "%d %c\n", streak, current->data);
-            streak = 0;
+        if (current->data != currentDirection) {
+            // Jeśli kierunek się zmienił, to wypisujemy o skręcie
+            fprintf(file, "%s\n", getTurnDirection(currentDirection, current->data));
+            currentDirection = current->data;
         }
-        current = current->next;
+
+        // Zliczanie ile ruchów trzeba wykonać w danym kierunku
+        int streak = 0;
+        while (current != NULL && current->data == currentDirection) {
+            streak++;
+            current = current->next;
+        }
+
+        // Wypisanie ile razy iść w danym kierunku
+        fprintf(file, "FORWARD %d\n", streak);
+        movesCount += streak;
     }
 
-    // Zamknij plik
-    fclose(file);
+    // Wypisanie zatrzymania
+    fprintf(file, "STOP\n");
 
-    return l_ruchow;
+    fclose(file);
+    return movesCount;
 }
