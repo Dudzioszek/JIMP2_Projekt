@@ -74,7 +74,7 @@ void reverseCharStack(CharStack* stack) {
 
 char popChar(CharStack* stack) {
     if (stack == NULL || stack->top == NULL) {
-        printf("Stos jest pusty!\n");
+        //printf("Stos jest pusty!\n");
         return '\0'; // Zwróć wartość domyślną dla typu char
     }
 
@@ -92,7 +92,7 @@ int printMoves(CharStack* stack, const char* filename) {
     FILE* file = fopen(filename, "w");
     if (file == NULL) {
         fprintf(stderr, "Nie można otworzyć pliku do zapisu.\n");
-        return;
+        return -11;
     }
 
     // Wypisz elementy stosu do pliku

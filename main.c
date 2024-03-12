@@ -10,6 +10,7 @@
 #define IN "maze.txt"
 #define OUT "kroki.txt"
 
+//funkcja testująca
 void wypiszLab(char *maze, int row, int cols, const char *filename) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
@@ -28,11 +29,12 @@ void wypiszLab(char *maze, int row, int cols, const char *filename) {
     fclose(file);
 }
 
+//funkcja testująca cd.
 void dodajSciezke(char *maze, CharStack *moves, int start, int col) {
     int cell = start;
     char move = popChar(moves);
 
-    while(move != NULL) {
+    while(move != '\0') {
         maze[cell] = '-';
         switch(move) {
                 case 'N':
@@ -53,6 +55,9 @@ void dodajSciezke(char *maze, CharStack *moves, int start, int col) {
 }
 
 int main() {
+    //zmienne testowe
+    int nodesSize = 0, pathLensSize = 0, allMovesSize = 0;
+
     int rows = 0, cols = 0, start = 0, end = 0;
     // przechowuje dlugosc drogi od węzła do węzła
     short int currPathLen = 0;
@@ -101,6 +106,7 @@ int main() {
 
     //dodaje ruch na stos
     pushChar(allMoves, currMove);
+    allMovesSize++;
 
     while(currCell != end) {
         //zbieram dane tj.: możliwe ruchy, ich liczba, współrzędne każdego z nich
@@ -108,35 +114,59 @@ int main() {
         switch(routesCount) {
             case 0:
                 currCell = pop(nodes);
+                nodesSize--;
                 popCharMultiple(allMoves, currPathLen);
+                allMovesSize -= currPathLen;
                 currPathLen = popShort(pathLens);
+                pathLensSize--;
                 break;
             case 1:
                 pushChar(allMoves, currMove);
+                allMovesSize++;
                 currCell = nextCell;
                 maze[currCell] = '-';
                 currPathLen++;
                 break;
             default:
                 push(nodes, currCell);
+                nodesSize++;
                 pushShort(pathLens, currPathLen);
+                pathLensSize++;
                 currPathLen = 1;
                 currCell = nextCell;
                 maze[currCell] = '-';
                 pushChar(allMoves, currMove);
+                allMovesSize++;
                 break;
         }
     }
 
     free(maze);
-    //Dodatkowe testy:
+    //Tworzę nowe, niezapełnione maze
     maze = calloc(mazeSize, sizeof(char));
     getData(IN, maze, cols, &start, &end);
+
+    //Odwracam stos
     reverseCharStack(allMoves);
+    
+    //Wypisuję do pliku mazeOut planszę ze wszystkimi ruchami
     dodajSciezke(maze, allMoves, start, cols);
-    wypiszLab(maze, rows, cols, "mazeOut");
-    //int k = printMoves(allMoves, OUT);
-    //printf("Rozwiazanie sklada sie z %d ruchow\n", k);
+    wypiszLab(maze, rows, cols, "mazeOut.txt");
+    printf("\nLabirynt ze sciezka zapisany w mazeOut,txt\n");
+
+    //Wypisuję raport
+    nodesSize *= 4; //int
+    pathLensSize *= 2; //short int
+    int sumaA = nodesSize + pathLensSize + allMovesSize;
+    int suma = sumaA + mazeSize;
+    printf("\n");
+    printf("Maze %f KB \nNodes %f KB \nPathLens %f KB \nAllMoves %f KB \n", (double)mazeSize/1000, (double)nodesSize/1000, (double)pathLensSize/1000, (double)allMovesSize/1000);
+    printf("Sam algorytm zajmuje: %f KB\n", (double)sumaA/1000);
+    printf("Caly program razem z planszą: %f KB\n", (double)suma/1000);
+    printf("\n");
+
+    //Zwalniam pamięć
+    free(maze);
     deleteStack(nodes);
     deleteShortStack(pathLens);
     deleteCharStack(allMoves);
