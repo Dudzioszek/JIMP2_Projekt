@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define IN "maze (4).txt"
+#define IN "maze.txt"
 #define OUT "kroki.txt"
 
 int main() {
