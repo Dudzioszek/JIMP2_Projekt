@@ -75,7 +75,7 @@ void reverseCharStack(CharStack* stack) {
 
 
 // Funkcja pomocnicza do printmoves do zwracania nazwy kierunku podczas skrętu
-const char* getTurnDirection(char from, char to) {
+char* getTurnDirection(char from, char to) {
     if ((from == 'N' && to == 'E') || (from == 'E' && to == 'S') ||
         (from == 'S' && to == 'W') || (from == 'W' && to == 'N')) {
         return "TURNRIGHT";
@@ -103,31 +103,48 @@ int printMoves(CharStack* stack, const char* filename) {
         return -1;
     }
 
-    // Wypisanie rozpoczęcia
     fprintf(file, "START\n");
 
-    // Przechodzenie przez stos i drukowanie ruchów
+    // Wypisanie rozpoczęcia
     CharStackNode* current = stack->top;
-    while (current != NULL) {
-        if (current->data != currentDirection) {
-            // Jeśli kierunek się zmienił, to wypisujemy o skręcie
-            fprintf(file, "%s\n", getTurnDirection(currentDirection, current->data));
-            currentDirection = current->data;
-        }
+    char nextDirection = (current != NULL) ? current->data : 'E'; // Domyślnie wschód, jeśli stos jest pusty
 
-        // Zliczanie ile ruchów trzeba wykonać w danym kierunku
-        int streak = 0;
-        while (current != NULL && current->data == currentDirection) {
+
+    // Jeśli pierwszy ruch nie jest na wschód, to musimy się obrócić
+    if (current != NULL && nextDirection != 'E') {
+
+        getTurnDirection(currentDirection, nextDirection);
+        currentDirection = nextDirection;
+    }
+
+    while (current != NULL) {
+        int streak = 1; // Zaczynamy od 1, ponieważ już jesteśmy na pierwszym ruchu w nowym kierunku
+        char direction = current->data;
+        current = current->next;
+
+
+        // Zliczanie ruchów w tym samym kierunku
+        while (current != NULL && current->data == direction) {
             streak++;
             current = current->next;
         }
 
-        // Wypisanie ile razy iść w danym kierunku
+        // Wypisanie instrukcji FORWARD z ilością wyliczonych kroków
         fprintf(file, "FORWARD %d\n", streak);
         movesCount += streak;
+
+        
+        if (current != NULL) { // Jeśli nie jesteśmy na końcu ścieżki
+            // Sprawdzanie następnego kierunku
+            nextDirection = current->data;
+            if (nextDirection != direction) {
+                // Wypisywanie instrukcji skrętu w zależności od kierunku
+                fprintf(file, "%s\n", getTurnDirection(direction, nextDirection));
+                currentDirection = nextDirection; // Aktualizacja aktualnego kierunku
+            }
+        }
     }
 
-    // Wypisanie zatrzymania
     fprintf(file, "STOP\n");
 
     fclose(file);
