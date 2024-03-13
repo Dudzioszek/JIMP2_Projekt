@@ -6,7 +6,7 @@ void checkSize(const char* filename, int* rows, int* cols) {
     // Otwarcie pliku
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        perror("Nie można otworzyć pliku");
+        perror("Nie można otworzyć pliku lub znaleźć pliku z labiryntem");
         exit(EXIT_FAILURE);
     }
 
@@ -39,7 +39,7 @@ void getData(const char* filename, char *maze, int cols, int* start, int* end) {
     // Otwarcie pliku
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        perror("Nie można otworzyć pliku");
+        perror("Nie można otworzyć pliku lub znaleźć pliku z labiryntem");
         exit(EXIT_FAILURE);
     }
 

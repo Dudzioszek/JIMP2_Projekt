@@ -66,26 +66,26 @@ int main() {
 
     while(currCell != end) {
         //zbieram dane tj.: możliwe ruchy, ich liczba, współrzędne każdego z nich
-        currMove = move(maze, directions, &nextCell, currCell, &routesCount, cols);
+        currMove = move(maze, directions, &nextCell, currCell, &routesCount, cols); 
         switch(routesCount) {
-            case 0:
-                currCell = pop(nodes);
-                popCharMultiple(allMoves, currPathLen);
-                currPathLen = popShort(pathLens);
+            case 0: // nie ma możliwości ruchu
+                currCell = pop(nodes); // cofanie się do poprzedniego węzła
+                popCharMultiple(allMoves, currPathLen); // usuwanie z stosu ruchy z poprzedniego węzła
+                currPathLen = popShort(pathLens); // pobranie długości drogi do poprzedniego węzła
                 break;
-            case 1:
+            case 1: // jest tylko jedna możliwość ruchu
                 pushChar(allMoves, currMove);
-                currCell = nextCell;
-                maze[currCell] = '-';
-                currPathLen++;
+                currCell = nextCell; // przechodzenie do następnego węzła
+                maze[currCell] = '-'; // oznaczanie jako odwiedzony
+                currPathLen++; 
                 break;
-            default:
-                push(nodes, currCell);
-                pushShort(pathLens, currPathLen);
+            default: // jest więcej niż jedna możliwość ruchu
+                push(nodes, currCell); // zapisanie obecnego węzła na stos
+                pushShort(pathLens, currPathLen); // zapisanie długości drogi do węzła
                 currPathLen = 1;
                 currCell = nextCell;
-                maze[currCell] = '-';
-                pushChar(allMoves, currMove);
+                maze[currCell] = '-'; 
+                pushChar(allMoves, currMove); // zapisanie ruchu na stos
                 break;
         }
     }

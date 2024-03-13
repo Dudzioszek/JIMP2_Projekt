@@ -25,27 +25,27 @@ void makePrio(char *directions, int rows, int cols, int end) {
 
 //funkcja wykonująca pierwszy ruch
 char firstMove(char *data, int *cell, int cols, int size) {
-    if(*cell - cols < 0) {
+    if(*cell - cols < 0) { 
         (*cell) += cols;
         return 'S';
     }
 
-    if((*cell) + cols >= size) {
+    if((*cell) + cols >= size) { 
         (*cell) -= cols;
         return 'N';
     }
     
-    if(data[(*cell)-cols] == ' ') {
+    if(data[(*cell)-cols] == ' ') { 
             (*cell)-= cols;
             return 'N';
         }
 
-    if(data[(*cell)+cols] == ' ') {
+    if(data[(*cell)+cols] == ' ') { 
             (*cell)+= cols;
             return 'S';
         }
 
-    if(data[(*cell)-1] == ' ') {
+    if(data[(*cell)-1] == ' ') { 
             (*cell) -= 1;
             return 'W';
         }
@@ -67,13 +67,13 @@ char move(char *data, char *directions, int* new_cell, int cell, int *count, int
     //jeśli brak ruchu to zwraca X
     char move = 'X';
 
-    for(int i = 3; i >= 0; i--) {
+    for(int i = 3; i >= 0; i--) { // Sprawdzam ruchy w kolejności priorytetów
         switch(directions[i]) {
             case 'N':
                 if(data[opt[0]] == ' ') {
-                    *new_cell = opt[0];
-                    move = 'N';
-                    j++;
+                    *new_cell = opt[0]; // Zapisuje nową komórkę
+                    move = 'N'; // Zapisuje ruch
+                    j++; // Zwiększam licznik dostępnych ruchów
                 }
                 break;
             case 'S':
