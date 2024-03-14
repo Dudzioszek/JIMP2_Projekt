@@ -19,4 +19,8 @@ void popCharMultiple(CharStack*, int);
 // Usuwa x elementów ze stosu
 void deleteCharStack(CharStack*);
 
+const char* getTurnDirection(char , char );
+
+int printMoves(CharStack *, const char* name);
+
 #endif // CHAR_STACK_H

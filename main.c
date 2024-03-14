@@ -116,22 +116,24 @@ int main() {
     }
     
     //Po włączeniu plik będzie zawierał ścieżkę wyjściową
-    restoreFile(maze);
-    dodajSciezke(maze, allMoves, start, cols);
+    /*
+        restoreFile(maze);
+        dodajSciezke(maze, allMoves, start, cols);
+    */
 
     //Zwalniam pamięć
     deleteIntStack(nodes);
     deleteShortStack(pathLens);
     //reverseCharStack(allMoves);
-    //int movesCount = printMoves(allMoves, OUT);
-    //printf("Rozwiazanie sklada sie z %d ruchow\n", movesCount);
+    int movesCount = printMoves(allMoves, OUT);
+    printf("Rozwiazanie sklada sie z %d ruchow\n", movesCount);
     deleteCharStack(allMoves);
     
-    //Usuwam z pliku ścieżkę
     //Wypełniam P i K aby można było wyczyścić dawną ścieżkę
     writeCell(maze, start, cols, 'P');
     writeCell(maze, end, cols, 'K');
-    //restoreFile(maze);
+    //Usuwam z pliku ścieżkę
+    restoreFile(maze);
     fclose(maze);
 
     return 0;
