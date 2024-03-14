@@ -39,7 +39,7 @@ int main() {
 
     //jesli nie zostanie wczytany początek lub koniec to nie ma roz.
     if(start == 0 || end == 0) {
-        printf("Labirynt nie ma rozwiązania!!\n");
+        printf("Nie znaleziono poczatku lub konca labiryntu\n");
         return -1;
     }
 
@@ -51,6 +51,8 @@ int main() {
     printf("Priorytety kierunkow: %.4s\n", directions);
     
     char currMove = firstMove(maze, &currCell, cols, mazeSize);
+
+    printf("Pierwszy ruch: %c\n", currMove);
     
     //kiedy program odwiedzi komórkę to zmienia ją z ' ' na '-'
     maze[currCell] = '-';
@@ -59,6 +61,8 @@ int main() {
 
     //dodaje ruch na stos
     pushChar(allMoves, currMove);
+
+    printf("Rozpoczynam algorytm");
 
     while(currCell != end) {
         //zbieram dane tj.: możliwe ruchy, ich liczba, współrzędne każdego z nich
@@ -89,7 +93,6 @@ int main() {
     free(maze);
     deleteStack(nodes);
     deleteShortStack(pathLens);
-    reverseCharStack(allMoves);
     int k = printMoves(allMoves, OUT);
     printf("Rozwiazanie sklada sie z %d ruchow\n", k);
     deleteCharStack(allMoves);
