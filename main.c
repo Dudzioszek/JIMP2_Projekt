@@ -24,7 +24,7 @@ int main() {
 
     //inicjalizuje stosy
     CharStack *allMoves = createCharStack();
-    Stack *nodes = createStack();
+    IntStack *nodes = createIntStack();
     ShortStack *pathLens = createShortStack();
 
     //pobieram z pliku rozmiar labiryntu
@@ -69,7 +69,7 @@ int main() {
         currMove = move(maze, directions, &nextCell, currCell, &routesCount, cols);
         switch(routesCount) {
             case 0:
-                currCell = pop(nodes);
+                currCell = popInt(nodes);
                 popCharMultiple(allMoves, currPathLen);
                 currPathLen = popShort(pathLens);
                 break;
@@ -80,7 +80,7 @@ int main() {
                 currPathLen++;
                 break;
             default:
-                push(nodes, currCell);
+                pushInt(nodes, currCell);
                 pushShort(pathLens, currPathLen);
                 currPathLen = 1;
                 currCell = nextCell;
@@ -95,11 +95,11 @@ int main() {
     writeCell(maze, end, cols, 'K');
     
     //Zwalniam pamięć
-    deleteStack(nodes);
+    deleteIntStack(nodes);
     deleteShortStack(pathLens);
-    reverseCharStack(allMoves);
-    int movesCount = printMoves(allMoves, OUT);
-    printf("Rozwiazanie sklada sie z %d ruchow\n", movesCount);
+    //reverseCharStack(allMoves);
+    //int movesCount = printMoves(allMoves, OUT);
+    //printf("Rozwiazanie sklada sie z %d ruchow\n", movesCount);
     deleteCharStack(allMoves);
     
     //Usuwam z pliku ścieżkę

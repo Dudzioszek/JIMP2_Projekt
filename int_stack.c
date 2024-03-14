@@ -1,51 +1,38 @@
-#include "int_stack.h"
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include "int_stack.h"
 
-// Inicjalizuje nowy stos
-Stack* createStack() {
-    Stack* stack = (Stack*)malloc(sizeof(Stack));
-    if (stack == NULL) {
-        
-        return NULL;
-    }
-    stack->top = NULL;
+#define INITIAL_CAPACITY 10
+
+// Funkcja tworząca nową dynamiczną tablicę znaków
+IntStack* createIntStack() {
+    IntStack* stack = (IntStack*)malloc(sizeof(IntStack));
+    stack->index = 0;
+    stack->capacity = INITIAL_CAPACITY;
+    stack->array = (int*)malloc(stack->capacity * sizeof(int));
     return stack;
 }
 
-// Dodaje element na wierzchołek stosu
-void push(Stack* stack, int data) {
-    StackNode* newNode = (StackNode*)malloc(sizeof(StackNode));
-    if (newNode == NULL) {
-        printf("Stack allocation problem");
+// Funkcja dodająca znak na koniec dynamicznej tablicy
+void pushInt(IntStack* stack, int element) {
+    if (stack->index == stack->capacity) {
+        // Zwiększamy pojemność dwukrotnie
+        stack->capacity *= 2;
+        stack->array = (int*)realloc(stack->array, stack->capacity * sizeof(int));
     }
-    newNode->data = data;
-    newNode->next = stack->top;
-    stack->top = newNode;
+    stack->array[stack->index] = element;
+    stack->index++;
 }
 
-// Usuwa i zwraca element z wierzchołka stosu. Jeśli stos jest pusty, zwraca -1.
-int pop(Stack* stack) {
-    if (isStackEmpty(stack)) {
-        return -1; // Stos jest pusty
-    }
-    StackNode* temp = stack->top;
-    int poppedData = temp->data;
-    stack->top = temp->next;
-    free(temp);
-    return poppedData;
+int popInt(IntStack* stack) {
+    stack->index--;
+    int temp = stack->array[stack->index];
+    stack->array[stack->index] = -1;
+    return temp;
 }
 
-// Usuwa stos i zwalnia zaalokowaną pamięć
-void deleteStack(Stack* stack) {
-    while (!isStackEmpty(stack)) {
-        pop(stack);
-    }
+// Funkcja usuwająca dynamiczną tablicę znaków
+void deleteIntStack(IntStack* stack) {
+    free(stack->array);
     free(stack);
-}
-
-//sprawdza czy stos jest pusty
-bool isStackEmpty(Stack* stack) {
-    if(stack->top == NULL) return true;
-    return false;
 }
