@@ -2,46 +2,37 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void checkSize(const char* filename, int* rows, int* cols) {
-    // Otwarcie pliku
-    FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        perror("Nie można otworzyć pliku");
-        exit(EXIT_FAILURE);
-    }
-
-    //zczytuje liczbe kolumn
+void checkSize(FILE *file, int *rows, int *cols) {
+    // Zczytywanie liczby kolumn
     while (getc(file) != '\n') {
         (*cols)++;
     }
 
-    //tworze zmienna pomocnicza line
-    char *line = (char*)malloc((*cols) * sizeof(char) + 1); // Allocate memory for the line
+    // Tworzenie zmiennej pomocniczej line
+    char *line = (char *)malloc((*cols) * sizeof(char) + 1); // Alokacja pamięci na linię
     if (line == NULL) {
         perror("Błąd alokacji pamięci");
         exit(EXIT_FAILURE);
     }
 
-    //zczytuje liczbe wierszy
+    // Zczytywanie liczby wierszy
     (*rows)++;
     while (fgets(line, (*cols) + 2, file) != NULL) {
         (*rows)++;
     }
 
-    fclose(file);
-    //zwalniam pamiec po line
-    free(line); 
-
+    // Zwalnianie pamięci po line
+    free(line);
 }
 
-void getData(const char* filename, int cols, int* start, int* end) {
 
+void getData(FILE *file, int cols, int *start, int *end) {
     // Otwarcie pliku
-    FILE *file = fopen(filename, "r");
     if (file == NULL) {
-        perror("Nie można otworzyć pliku");
+        perror("Nie można otworzyć pliku lub znaleźć pliku z labiryntem");
         exit(EXIT_FAILURE);
     }
+    rewind(file);
 
     //tworze zmienna pomocnicza line
     char *line = (char*)malloc(cols * sizeof(char) + 1); // Allocate memory for the line
@@ -58,6 +49,7 @@ void getData(const char* filename, int cols, int* start, int* end) {
         temp_col = 0;
         while (temp_col < cols) {
             index = temp_row * cols + temp_col;  // Obliczenie indeksu w tablicy jednowymiarowej
+
             //jesli znajde P lub K to zapisuje w start lub end
             if(line[temp_col] == 'P') (*start) = index;
             if(line[temp_col] == 'K') {
@@ -68,64 +60,43 @@ void getData(const char* filename, int cols, int* start, int* end) {
         }
         temp_row++;
     }
-
-    fclose(file);
     free(line); 
 }
 
-char readCell(const char *filename, int index, int col) {
-    FILE *file = fopen(filename, "r");
-    if (file == NULL) {
-        perror("Nie można otworzyć pliku");
-        return EOF; // Wartość EOF oznacza błąd odczytu
-    }
-    // Przesuwamy kursor pliku do odpowiedniego miejsca
-    int k = index + (index/col); //biorę poprawkę na nowe linie
+
+char readCell(FILE *file, int index, int col) {
+    // Przesuwanie kursora pliku do odpowiedniego miejsca
+    int k = index + (index / col); // Poprawka na nowe linie
     fseek(file, k, SEEK_SET); // +2 for newline and null terminator
-    // Odczytujemy i zwracamy wartość komórki
-    // Zamykamy plik
+    // Odczytanie i zwrócenie wartości komórki
     char x = fgetc(file);
-    fclose(file);
     return x;
 }
 
-
-void writeCell(const char *filename, int index, int col, char character) {
-    FILE *file = fopen(filename, "r+");
-    if (file == NULL) {
-        perror("Nie można otworzyć pliku");
-        return;
-    }
-
+void writeCell(FILE *file, int index, int col, char character) {
     // Obliczamy indeks wiersza i kolumny na podstawie indeksu liniowego
-    int k = index + (index / col); // biorę poprawkę na nowe linie
-
+    int k = index + (index / col); // Poprawka na nowe linie
     // Przesuwamy kursor pliku do odpowiedniego miejsca
     fseek(file, k, SEEK_SET);
 
     // Zapisujemy znak do pliku
     fputc(character, file);
-
-    // Zamykamy plik
-    fclose(file);
 }
 
-void restoreFile(const char *nazwa_pliku) {
-    FILE *plik_wejscie = fopen(nazwa_pliku, "r");
-    FILE *plik_wyjscie = fopen("plik_wyjscie.txt", "w"); // Tworzymy nowy plik wyjściowy
 
-    if (plik_wejscie == NULL || plik_wyjscie == NULL) {
-        printf("Nie udało się otworzyć plików.\n");
+void restoreFile(FILE *file) {
+
+    if (file == NULL) {
+        printf("Nie udało się otworzyć pliku.\n");
         return;
     }
-
+    rewind(file);
     char znak;
-    while ((znak = fgetc(plik_wejscie)) != EOF) {
+    while ((znak = fgetc(file)) != EOF) {
         if (znak == '-') {
-            znak = ' ';
+            fseek(file, -1, SEEK_CUR); // Przesuwa wskaźnik pliku o jeden bajt wstecz
+            fputc(' ', file); // Zapisuje pusty znak w miejscu wystąpienia '-'
         }
-        fputc(znak, plik_wyjscie);
     }
-
-    fclose(plik_wejscie);
 }
+

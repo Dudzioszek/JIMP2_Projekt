@@ -16,7 +16,7 @@ int main() {
     short int currPathLen = 0;
     //zawiera priorytet kierunków, np: ESWN - prawo-dół-lewo-góra
     char directions[5];
-    
+    FILE *maze = fopen(IN, "r+");
     //komórka którą algorytm wybierze jako następną
     int nextCell;
     //liczba możliwości ruchu
@@ -28,16 +28,14 @@ int main() {
     ShortStack *pathLens = createShortStack();
 
     //pobieram z pliku rozmiar labiryntu
-    checkSize(IN, &rows, &cols);
+    checkSize(maze, &rows, &cols);
 
     int mazeSize = rows*cols;
 
     //ta zmienna przechowuje sciany oraz przestrzen labiryntu
-    //char *maze = calloc(mazeSize, sizeof(char));
 
     //zapelniam zmienna maze, start i end
-    getData(IN, cols, &start, &end);
-
+    getData(maze, cols, &start, &end);
     //jesli nie zostanie wczytany początek lub koniec to nie ma roz.
     if(start == 0 || end == 0) {
         printf("Nie znaleziono poczatku lub konca labiryntu\n");
@@ -50,24 +48,25 @@ int main() {
     makePrio(directions, rows, cols, end);
     printf("Priorytety kierunkow: %.4s\n", directions);
     
-    char currMove = firstMove(IN, &currCell, cols, mazeSize);
+    char currMove = firstMove(maze, &currCell, cols, mazeSize);
 
     printf("Pierwszy ruch: %c\n", currMove);
     
     //kiedy program odwiedzi komórkę to zmienia ją z ' ' na '-'
-    writeCell(IN, currCell, cols, '-');
-    writeCell(IN, start, cols, '-');
-    writeCell(IN, end, cols, ' ');
+    writeCell(maze, currCell, cols, '-');
+    writeCell(maze, start, cols, '-');
+    //Usuwam tymczasowo K z mapy aby algorytm traktował je jako przestrzeń
+    writeCell(maze, end, cols, ' ');
     currPathLen++;
 
     //dodaje ruch na stos
     pushChar(allMoves, currMove);
 
-    printf("Rozpoczynam algorytm\n");
+    printf("Rozpoczynam algorytm...\n");
 
     while(currCell != end) {
         //zbieram dane tj.: możliwe ruchy, ich liczba, współrzędne każdego z nich
-        currMove = move(IN, directions, &nextCell, currCell, &routesCount, cols);
+        currMove = move(maze, directions, &nextCell, currCell, &routesCount, cols);
         switch(routesCount) {
             case 0:
                 currCell = pop(nodes);
@@ -77,7 +76,7 @@ int main() {
             case 1:
                 pushChar(allMoves, currMove);
                 currCell = nextCell;
-                writeCell(IN, currCell, cols, '-');
+                writeCell(maze, currCell, cols, '-');
                 currPathLen++;
                 break;
             default:
@@ -85,21 +84,27 @@ int main() {
                 pushShort(pathLens, currPathLen);
                 currPathLen = 1;
                 currCell = nextCell;
-                writeCell(IN, currCell, cols, '-');
+                writeCell(maze, currCell, cols, '-');
                 pushChar(allMoves, currMove);
                 break;
         }
     }
 
-    writeCell(IN, start, cols, 'P');
-    writeCell(IN, end, cols, 'K');
-    //restoreFile(IN);
+    //Wypełniam P i K aby można było wyczyścić dawną ścieżkę
+    writeCell(maze, start, cols, 'P');
+    writeCell(maze, end, cols, 'K');
+    
+    //Zwalniam pamięć
     deleteStack(nodes);
     deleteShortStack(pathLens);
     reverseCharStack(allMoves);
-    int k = printMoves(allMoves, OUT);
-    printf("Rozwiazanie sklada sie z %d ruchow\n", k);
+    int movesCount = printMoves(allMoves, OUT);
+    printf("Rozwiazanie sklada sie z %d ruchow\n", movesCount);
     deleteCharStack(allMoves);
+    
+    //Usuwam z pliku ścieżkę
+    restoreFile(maze);
+    fclose(maze);
 
     return 0;
 }
