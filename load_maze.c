@@ -85,7 +85,6 @@ void writeCell(FILE *file, int index, int col, char character) {
 
 
 void restoreFile(FILE *file) {
-
     if (file == NULL) {
         printf("Nie udało się otworzyć pliku.\n");
         return;

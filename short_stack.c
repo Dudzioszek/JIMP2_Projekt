@@ -1,49 +1,38 @@
-#include "short_stack.h"
+#include <stdio.h>
 #include <stdlib.h>
+#include "short_stack.h"
 
-// Initializes a new stack
+#define INITIAL_CAPACITY 10
+
+// Funkcja tworząca nową dynamiczną tablicę znaków
 ShortStack* createShortStack() {
     ShortStack* stack = (ShortStack*)malloc(sizeof(ShortStack));
-    if (stack == NULL) {
-        return NULL;
-    }
-    stack->top = NULL;
+    stack->index = 0;
+    stack->capacity = INITIAL_CAPACITY;
+    stack->array = (int*)malloc(stack->capacity * sizeof(int));
     return stack;
 }
 
-// Adds element to the top of the stack
-void pushShort(ShortStack* stack, short int data) {
-    ShortStackNode* newNode = (ShortStackNode*)malloc(sizeof(ShortStackNode));
-    if (newNode == NULL) {
-        return;
+// Funkcja dodająca znak na koniec dynamicznej tablicy
+void pushShort(ShortStack* stack, int element) {
+    if (stack->index == stack->capacity) {
+        // Zwiększamy pojemność dwukrotnie
+        stack->capacity *= 2;
+        stack->array = (int*)realloc(stack->array, stack->capacity * sizeof(int));
     }
-    newNode->data = data;
-    newNode->next = stack->top;
-    stack->top = newNode;
+    stack->array[stack->index] = element;
+    stack->index++;
 }
 
-// Removes and returns element from the top of the stack. If the stack is empty, returns -1.
-short int popShort(ShortStack* stack) {
-    if (isShortStackEmpty(stack)) {
-        return -1; // Stack is empty
-    }
-    ShortStackNode* temp = stack->top;
-    short int poppedData = temp->data;
-    stack->top = temp->next;
-    free(temp);
-    return poppedData;
+int popShort(ShortStack* stack) {
+    stack->index--;
+    int temp = stack->array[stack->index];
+    stack->array[stack->index] = -1;
+    return temp;
 }
 
-// Deletes the stack and frees the allocated memory
+// Funkcja usuwająca dynamiczną tablicę znaków
 void deleteShortStack(ShortStack* stack) {
-    while (!isShortStackEmpty(stack)) {
-        popShort(stack); // Corrected function call
-    }
+    free(stack->array);
     free(stack);
-}
-
-// Checks if the stack is empty
-bool isShortStackEmpty(ShortStack* stack) {
-    if(stack->top == NULL) return true;
-    return false;
 }

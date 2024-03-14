@@ -10,6 +10,31 @@
 #define IN "maze.txt"
 #define OUT "kroki.txt"
 
+void dodajSciezke(FILE *file, CharStack *moves, int start, int col) {
+    int cell = start;
+    int i = 0;
+    char move;
+    while(i <= moves->index) {       
+        move = moves->array[i];
+        writeCell(file, cell, col, '-');
+        switch(move) {
+                case 'N':
+                    cell -= col;
+                    break;
+                case 'S':
+                    cell += col;
+                    break;
+                case 'E':
+                    cell += 1;
+                    break;
+                case 'W':
+                    cell -= 1;
+                    break;
+            }
+        i++;
+        }
+}
+
 int main() {
     int rows = 0, cols = 0, start = 0, end = 0;
     // przechowuje dlugosc drogi od węzła do węzła
@@ -89,11 +114,11 @@ int main() {
                 break;
         }
     }
-
-    //Wypełniam P i K aby można było wyczyścić dawną ścieżkę
-    writeCell(maze, start, cols, 'P');
-    writeCell(maze, end, cols, 'K');
     
+    //Po włączeniu plik będzie zawierał ścieżkę wyjściową
+    restoreFile(maze);
+    dodajSciezke(maze, allMoves, start, cols);
+
     //Zwalniam pamięć
     deleteIntStack(nodes);
     deleteShortStack(pathLens);
@@ -103,7 +128,10 @@ int main() {
     deleteCharStack(allMoves);
     
     //Usuwam z pliku ścieżkę
-    restoreFile(maze);
+    //Wypełniam P i K aby można było wyczyścić dawną ścieżkę
+    writeCell(maze, start, cols, 'P');
+    writeCell(maze, end, cols, 'K');
+    //restoreFile(maze);
     fclose(maze);
 
     return 0;

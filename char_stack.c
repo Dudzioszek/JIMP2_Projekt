@@ -25,13 +25,13 @@ void pushChar(CharStack* stack, char element) {
 }
 
 void popCharMultiple(CharStack* stack, int popAmount) {
-    int i = 0;
-    while(i < popAmount) {
-        stack->array[stack->index] = 'X';
-        stack->index--;
-        i++;
+    if (popAmount <= stack->index) {
+        stack->index -= popAmount;
+    } else {
+        stack->index = 0; // Jeśli popAmount jest większy niż liczba elementów na stosie, usuwamy wszystkie elementy
     }
 }
+
 
 // Funkcja usuwająca dynamiczną tablicę znaków
 void deleteCharStack(CharStack* stack) {
