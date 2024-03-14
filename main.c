@@ -29,13 +29,14 @@ int main() {
 
     //pobieram z pliku rozmiar labiryntu
     checkSize(IN, &rows, &cols);
+
     int mazeSize = rows*cols;
 
     //ta zmienna przechowuje sciany oraz przestrzen labiryntu
-    char *maze = calloc(mazeSize, sizeof(char));
+    //char *maze = calloc(mazeSize, sizeof(char));
 
     //zapelniam zmienna maze, start i end
-    getData(IN, maze, cols, &start, &end);
+    getData(IN, cols, &start, &end);
 
     //jesli nie zostanie wczytany początek lub koniec to nie ma roz.
     if(start == 0 || end == 0) {
@@ -45,28 +46,28 @@ int main() {
 
     //obecna komórka
     int currCell = start;
-    
     //ustalam priorytet poruszania sie
     makePrio(directions, rows, cols, end);
     printf("Priorytety kierunkow: %.4s\n", directions);
     
-    char currMove = firstMove(maze, &currCell, cols, mazeSize);
+    char currMove = firstMove(IN, &currCell, cols, mazeSize);
 
     printf("Pierwszy ruch: %c\n", currMove);
     
     //kiedy program odwiedzi komórkę to zmienia ją z ' ' na '-'
-    maze[currCell] = '-';
-    maze[start] = '-';
+    writeCell(IN, currCell, cols, '-');
+    writeCell(IN, start, cols, '-');
+    writeCell(IN, end, cols, ' ');
     currPathLen++;
 
     //dodaje ruch na stos
     pushChar(allMoves, currMove);
 
-    printf("Rozpoczynam algorytm");
+    printf("Rozpoczynam algorytm\n");
 
     while(currCell != end) {
         //zbieram dane tj.: możliwe ruchy, ich liczba, współrzędne każdego z nich
-        currMove = move(maze, directions, &nextCell, currCell, &routesCount, cols);
+        currMove = move(IN, directions, &nextCell, currCell, &routesCount, cols);
         switch(routesCount) {
             case 0:
                 currCell = pop(nodes);
@@ -76,7 +77,7 @@ int main() {
             case 1:
                 pushChar(allMoves, currMove);
                 currCell = nextCell;
-                maze[currCell] = '-';
+                writeCell(IN, currCell, cols, '-');
                 currPathLen++;
                 break;
             default:
@@ -84,15 +85,18 @@ int main() {
                 pushShort(pathLens, currPathLen);
                 currPathLen = 1;
                 currCell = nextCell;
-                maze[currCell] = '-';
+                writeCell(IN, currCell, cols, '-');
                 pushChar(allMoves, currMove);
                 break;
         }
     }
 
-    free(maze);
+    writeCell(IN, start, cols, 'P');
+    writeCell(IN, end, cols, 'K');
+    //restoreFile(IN);
     deleteStack(nodes);
     deleteShortStack(pathLens);
+    reverseCharStack(allMoves);
     int k = printMoves(allMoves, OUT);
     printf("Rozwiazanie sklada sie z %d ruchow\n", k);
     deleteCharStack(allMoves);

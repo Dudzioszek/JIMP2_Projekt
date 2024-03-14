@@ -1,4 +1,5 @@
 #include "algorytm.h"
+#include "load_maze.h"
 #include <stdio.h>
 
 //wybieram priorytet ruchów
@@ -24,7 +25,7 @@ void makePrio(char *directions, int rows, int cols, int end) {
 }
 
 //funkcja wykonująca pierwszy ruch
-char firstMove(char *data, int *cell, int cols, int size) {
+char firstMove(const char* fileName, int *cell, int cols, int size) {
     if(*cell - cols < 0) {
         (*cell) += cols;
         return 'S';
@@ -35,22 +36,22 @@ char firstMove(char *data, int *cell, int cols, int size) {
         return 'N';
     }
     
-    if(data[(*cell)-cols] == ' ') {
+    if(readCell(fileName, (*cell)-cols, cols) == ' ') {
             (*cell)-= cols;
             return 'N';
         }
 
-    if(data[(*cell)+cols] == ' ') {
+    if(readCell(fileName, (*cell)+cols, cols) == ' ') {
             (*cell)+= cols;
             return 'S';
         }
 
-    if(data[(*cell)-1] == ' ') {
+    if(readCell(fileName, (*cell)-1, cols) == ' ') {
             (*cell) -= 1;
             return 'W';
         }
 
-    if(data[(*cell)+1] == ' ') {
+    if(readCell(fileName, (*cell)+1, cols) == ' ') {
             (*cell) += 1;
             return 'E';
         }
@@ -59,7 +60,7 @@ char firstMove(char *data, int *cell, int cols, int size) {
 }
 
 //główna funkcja wykonująca ruch
-char move(char *data, char *directions, int* new_cell, int cell, int *count, int col) {
+char move(const char* fileName, char *directions, int* new_cell, int cell, int *count, int col) {
     //ta zmienna inforumuje ile jest opcji ruchu w tej komorce
     int j = 0;
     //Kolejne przypadki N,S,E,W
@@ -70,28 +71,28 @@ char move(char *data, char *directions, int* new_cell, int cell, int *count, int
     for(int i = 3; i >= 0; i--) {
         switch(directions[i]) {
             case 'N':
-                if(data[opt[0]] == ' ') {
+                if(readCell(fileName, opt[0], col) == ' ') {
                     *new_cell = opt[0];
                     move = 'N';
                     j++;
                 }
                 break;
             case 'S':
-                if(data[opt[1]] == ' ') {
+                if(readCell(fileName, opt[1], col) == ' ') {
                     *new_cell = opt[1];
                     move = 'S';
                     j++;
                 }
                 break;
             case 'E':
-                if(data[opt[2]] == ' ') {
+                if(readCell(fileName, opt[2], col) == ' ') {
                     *new_cell = opt[2];
                     move = 'E';
                     j++;
                 }
                 break;
             case 'W':
-                if(data[opt[3]] == ' ') {
+                if(readCell(fileName, opt[3], col) == ' ') {
                     *new_cell = opt[3];
                     move = 'W';
                     j++;
