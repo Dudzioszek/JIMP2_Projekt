@@ -3,36 +3,29 @@
 #include "char_stack.h"
 
 // Funkcja tworząca nową dynamiczną tablicę znaków
-CharStack* createCharStack(int capacity) {
+CharStack* createCharStack(FILE *file) {
     CharStack* stack = (CharStack*)malloc(sizeof(CharStack));
     stack->index = 0;
-    stack->capacity = capacity;
-    stack->array = (char*)malloc(stack->capacity * sizeof(char));
+    stack->file = file;
     return stack;
 }
 
 // Funkcja dodająca znak na koniec dynamicznej tablicy
 void pushChar(CharStack* stack, char element) {
-    if (stack->index == stack->capacity) {
-        printf("STOS PELNY!!!");
-        return;
-    }
-    stack->array[stack->index] = element;
+    fseek(stack->file,stack->index, SEEK_SET);
+    fputc(element, stack->file);
     stack->index++;
 }
 
 void popCharMultiple(CharStack* stack, int popAmount) {
-    if (popAmount <= stack->index) {
-        stack->index -= popAmount;
-    } else {
-        stack->index = 0; // Jeśli popAmount jest większy niż liczba elementów na stosie, usuwamy wszystkie elementy
-    }
+    fseek(stack->file, -popAmount, SEEK_END);
+    fputc(' ', stack->file);
+    stack->index -= popAmount;
 }
 
 
 // Funkcja usuwająca dynamiczną tablicę znaków
 void deleteCharStack(CharStack* stack) {
-    free(stack->array);
     free(stack);
 }
 
@@ -45,7 +38,7 @@ const char* getTurnDirection(char from, char to) {
         return "TURNLEFT";
     }
 }
-
+/*
 int printMoves(CharStack* stack, const char* filename) {
 
     int l_ruch = 0;
@@ -90,3 +83,4 @@ int printMoves(CharStack* stack, const char* filename) {
     fclose(file);
     return l_ruch; // Zwróć 0, aby sygnalizować, że funkcja zakończyła się sukcesem
 }
+*/

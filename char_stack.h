@@ -2,13 +2,12 @@
 #define CHAR_STACK_H
 
 typedef struct {
-    char *array;
+    FILE *file;
     int index;
-    int capacity;
 } CharStack;
 
 // Inicjalizuje nowy stos
-CharStack* createCharStack(int);
+CharStack* createCharStack(FILE*);
 
 // Dodaje element na wierzchołek stosu
 void pushChar(CharStack*, char);
