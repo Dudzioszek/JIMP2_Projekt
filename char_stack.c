@@ -3,133 +3,100 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-// Inicjalizuje nowy stos
-CharStack* createCharStack() {
+#define BASE_CAPACITY 10
+
+// Tworzy nowy stos
+CharStack* initCharStack() {
     CharStack* stack = (CharStack*)malloc(sizeof(CharStack));
-    if (!stack) {
-        return NULL;
+    if (!stack){
+        printf("Błąd alokacji pamięci");
+        exit(EXIT_FAILURE); // Kontrola błędu alokacji
+    }   
+    stack->top = -1; // Pusty stos
+
+    stack->max_size = BASE_CAPACITY; // Początkowy rozmiar stosu
+
+    stack->array = (char*)malloc(sizeof(char) * stack->max_size);// Tworzenie tablicy na elementy stosu
+    
+    if (!stack->array) { 
+        free(stack);
+        exit(EXIT_FAILURE); // Kontrola błędu alokacji
     }
-    stack->top = NULL;
+
     return stack;
 }
 
-// Dodaje element na wierzchołek stosu
+// Dodaje element na stos
 void pushChar(CharStack* stack, char data) {
-    CharStackNode* newNode = (CharStackNode*)malloc(sizeof(CharStackNode));
-    if (!newNode) {
-        return;
+
+    if (stack->top == stack->max_size - 1) { // Zwiększ rozmiar stosu, jeśli potrzeba
+        stack->max_size *= 2;
+        stack->array = (char*)realloc(stack->array, sizeof(char) * stack->max_size);
+        if (!stack->array) exit(EXIT_FAILURE); // Kontrola błędu realokacji
     }
-    newNode->data = data;
-    newNode->next = stack->top;
-    stack->top = newNode;
+
+    stack->array[++stack->top] = data; // Dodaje element
 }
 
-// Usuwa x elementów ze stosu. 
-void popCharMultiple(CharStack* stack, int x) {
-    CharStackNode* temp;
-    while (x-- > 0 && stack->top != NULL) {
-        temp = stack->top;
-        stack->top = stack->top->next;
-        free(temp);
-    }
-}
-
-//Zwraca dwa elementy ze stosu
-void returnTwoElem(CharStack* stack, char* element1, char* element2) {
-    CharStackNode* topNode = stack->top;
-    *element1 = topNode->data;
-    *element2 = topNode->next->data;
+// Usuwa wiele elementów ze stosu
+void removeMultiChar(CharStack* stack, int amount) {
+    stack->top -= amount;
+    if (stack->top < -1) stack->top = -1; // Zapewnia, że top nie jest mniejsze niż -1
 }
 
 // Usuwa stos
-void deleteCharStack(CharStack* stack) {
-    while (stack->top != NULL) {
-        popCharMultiple(stack, 1);
-    }
-    free(stack);
+void freeChar(CharStack* stack) {
+    free(stack->array); 
+    free(stack); 
 }
 
-void reverseCharStack(CharStack* stack) {
-    if (stack == NULL || stack->top == NULL || stack->top->next == NULL) {
-        // Stos jest pusty lub ma tylko jeden element, więc nie ma potrzeby odwracania
-        return;
-    }
-
-    CharStackNode *prevNode = NULL;
-    CharStackNode *currentNode = stack->top;
-    CharStackNode *nextNode = NULL;
-
-    while (currentNode != NULL) {
-        nextNode = currentNode->next; // Zapamiętaj następny element
-        currentNode->next = prevNode; // Odwróć wskaźnik na następny element
-
-        
-        // Przesuń wskaźniki
-        prevNode = currentNode;
-        currentNode = nextNode;
-    }
-
-    // Popraw wskaźnik na wierzchołek stosu
-    stack->top = prevNode;
-}
-
-
-// Funkcja pomocnicza do printmoves do zwracania nazwy kierunku podczas skrętu
-const char* getTurnDirection(char from, char to) {
+// Funkcja pomocnicza do określania kierunku skrętu
+const char* determineTurn(char from, char to) {
     if ((from == 'N' && to == 'E') || (from == 'E' && to == 'S') ||
         (from == 'S' && to == 'W') || (from == 'W' && to == 'N')) {
-        return "TURNRIGHT";
+        return "RIGHT";
     } else {
-        return "TURNLEFT";
+        return "LEFT";
     }
 }
 
+int PrintMoves(CharStack* stack, const char* outputPath) {
+    int moveCount = 0;
 
-
-int printMoves(CharStack* stack, const char* filename) {
-
-    // Odwracanie stosu, aby ruchy były w kolejności od początku do końca
-    reverseCharStack(stack);
-
-    // Zakładamy że ścieżka patrzy się na wschód
-    char currentDirection = 'E';
-    int movesCount = 0;
-
-
-    // Otwieranie pliku do zapisu
-    FILE* file = fopen(filename, "w");
-    if (file == NULL) {
-        fprintf(stderr, "Nie można otworzyć pliku do zapisu.\n");
+    FILE* output = fopen(outputPath, "w");
+    if (!output) {
+        fprintf(stderr, "Failed to open file for writing.\n");
         return -1;
     }
 
-    // Wypisanie rozpoczęcia
-    fprintf(file, "START\n");
+    fprintf(output, "BEGIN\n");
 
-    // Przechodzenie przez stos i drukowanie ruchów
-    CharStackNode* current = stack->top;
-    while (current != NULL) {
-        if (current->data != currentDirection) {
-            // Jeśli kierunek się zmienił, to wypisujemy o skręcie
-            fprintf(file, "%s\n", getTurnDirection(currentDirection, current->data));
-            currentDirection = current->data;
-        }
+    char currentDir = 'E'; // Początkowy kierunek
 
-        // Zliczanie ile ruchów trzeba wykonać w danym kierunku
-        int streak = 0;
-        while (current != NULL && current->data == currentDirection) {
-            streak++;
-            current = current->next;
-        }
-
-        // Wypisanie ile razy iść w danym kierunku
-        fprintf(file, "FORWARD %d\n", streak);
-        movesCount += streak;
+    // Jeśli stos nie jest pusty i pierwszy ruch nie jest w tym samym kierunku co obecny kierunek
+    if (stack->top >= 0 && stack->array[0] != currentDir) {
+        determineTurn(currentDir, stack->array[0]);
+        currentDir = stack->array[0];
     }
 
-    // Wypisanie zatrzymania
-    fprintf(file, "STOP\n");
+    int seqLength = 1; // Długość sekwencji ruchów w tym samym kierunku
+    char lastDir = stack->array[0]; // Ostatni kierunek
 
-    fclose(file);
-    return movesCount;
+    for (int i = 1; i <= stack->top; i++) {
+        moveCount++;
+        if (stack->array[i] == lastDir) {
+            seqLength++;
+        } else {
+            fprintf(output, "MOVE %d\n", seqLength); 
+            fprintf(output, "%s\n", determineTurn(lastDir, stack->array[i])); 
+
+            lastDir = stack->array[i];
+            seqLength = 1; 
+        }
+    }
+
+    fprintf(output, "MOVE %d\n", seqLength); 
+    fprintf(output, "END\n"); 
+    fclose(output);
+    return moveCount;
 }

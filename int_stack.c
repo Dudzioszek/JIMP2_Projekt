@@ -2,50 +2,54 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// Inicjalizuje nowy stos
-Stack* createStack() {
-    Stack* stack = (Stack*)malloc(sizeof(Stack));
+#define BASE_SIZE 10
+
+// Inicjalizacja nowego stosu
+IntStack* initInt() {
+    IntStack* stack = (IntStack*)malloc(sizeof(IntStack)); // 
+
     if (stack == NULL) {
-        
-        return NULL;
+        printf("Błąd alokacji pamięci");
+        exit(EXIT_FAILURE); // Nieudana alokacja pamięci
     }
-    stack->top = NULL;
+    stack->top = -1; // Stos jest pusty
+    stack->max_size = BASE_SIZE;
+    stack->array = (int*)malloc(stack->max_size * sizeof(int));
+    
+    if (stack->array == NULL) {
+        free(stack); // Zwolnij pamięć przydzieloną dla struktury stosu, jeśli nie można przydzielić pamięci na elementy
+        exit(EXIT_FAILURE);
+    }
+
     return stack;
 }
 
-// Dodaje element na wierzchołek stosu
-void push(Stack* stack, int data) {
-    StackNode* newNode = (StackNode*)malloc(sizeof(StackNode));
-    if (newNode == NULL) {
-        printf("Stack allocation problem");
+// Dodawanie elementu do stosu
+void pushInt(IntStack* stack, int value) {
+
+    if (stack->top == stack->max_size - 1) { // Jeśli potrzeba więcej miejsca
+        stack->max_size *= 2; // Podwajamy rozmiar tablicy
+
+        stack->array = (int*)realloc(stack->array, stack->max_size * sizeof(int));
+        
+        if (stack->array == NULL) {
+            exit(EXIT_FAILURE); // Nieudana realokacja pamięci
+        }
     }
-    newNode->data = data;
-    newNode->next = stack->top;
-    stack->top = newNode;
+
+    stack->array[++stack->top] = value; // Dodajemy element na stos
 }
 
-// Usuwa i zwraca element z wierzchołka stosu. Jeśli stos jest pusty, zwraca -1.
-int pop(Stack* stack) {
-    if (isStackEmpty(stack)) {
-        return -1; // Stos jest pusty
+// Usuwanie elementu ze stosu
+int removeInt(IntStack* stack) {
+    if (stack->top == -1) { // Jeśli stos jest pusty
+        return -1; 
     }
-    StackNode* temp = stack->top;
-    int poppedData = temp->data;
-    stack->top = temp->next;
-    free(temp);
-    return poppedData;
+    return stack->array[stack->top--]; 
 }
 
-// Usuwa stos i zwalnia zaalokowaną pamięć
-void deleteStack(Stack* stack) {
-    while (!isStackEmpty(stack)) {
-        pop(stack);
-    }
-    free(stack);
-}
-
-//sprawdza czy stos jest pusty
-bool isStackEmpty(Stack* stack) {
-    if(stack->top == NULL) return true;
-    return false;
+// Zwalnianie pamięci stosu
+void freeInt(IntStack* stack) {
+    free(stack->array); 
+    free(stack); 
 }

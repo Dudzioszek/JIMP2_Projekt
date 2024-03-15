@@ -1,27 +1,20 @@
 #include <stdbool.h>
 
-// Definicja struktury dla elementu stosu
-typedef struct StackNode {
-    int data; // kordynaty labiryntu
-    struct StackNode* next; // Wskaźnik na następny element stosu
-} StackNode;
-
-// Definicja struktury dla stosu
-typedef struct Stack {
-    StackNode* top; // Wskaźnik na wierzchołek stosu
-} Stack;
 
 
-// Inicjalizuje nowy stos
-Stack* createStack();
+// Definicja typu dla stosu liczbowego
+typedef struct {
+    int *array; // Tablica na elementy stosu
+    int top; // Wskaźnik na wierzchołek stosu
+    int max_size; // Rozmiar stosu
+} IntStack;
 
-// Dodaje element na wierzchołek stosu
-void push(Stack* stack, int data);
+// Prototypy funkcji dla stosu
 
-// Usuwa i zwraca element z wierzchołka stosu
-int pop(Stack* stack);
+IntStack* initInt(); // 
 
-// Usuwa stos i zwalnia zaalokowaną pamięć
-void deleteStack(Stack* stack);
+void pushInt(IntStack* stack, int value); // 
 
-bool isStackEmpty(Stack* stack);
+int removeInt(IntStack* stack); //
+
+void freeInt(IntStack* stack); //

@@ -3,32 +3,33 @@
 
 #include <stdbool.h>
 
-typedef struct CharStackNode {
-    char data; // kordynaty labiryntu
-    struct CharStackNode* next; // Wskaźnik na następny element stosu
-} CharStackNode;
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-typedef struct CharStack {
-    CharStackNode* top;  // Wskaźnik na wierzchołek stosu
+#include <stdio.h>
+#include <stdlib.h>
+
+// Definicja struktury dla stosu znakowego
+typedef struct {
+    char *array; // Tablica na elementy stosu
+    int top; // Wskaźnik na wierzchołek stosu
+    int max_size; // Rozmiar stosu
 } CharStack;
 
-// Inicjalizuje nowy stos
-CharStack* createCharStack();
+// Funkcje
 
-// Dodaje element na wierzchołek stosu
-void pushChar(CharStack*, char);
+CharStack* initCharStack(); // Inicjalizuje nowy stos
 
-// Usuwa i zwraca element z wierzchołka stosu
-void popCharMultiple(CharStack*, int);
+void pushChar(CharStack*, char); // Dodaje element na stos
 
-void returnTwoElem(CharStack*, char*, char*);
+void removeMultiChar(CharStack*, int); // Usuwa wiele elementów ze stosu
 
-void reverseCharStack(CharStack* stack);
+void freeChar(CharStack*); // Usuwa stos
 
-// Usuwa x elementów ze stosu
-void deleteCharStack(CharStack*);
+const char* determineTurn(char from, char to); // Funkcja pomocnicza do określania kierunku skrętu
 
-//wypisuje ruchy do pliku, zwraca liczbe ruchow
-int printMoves(CharStack*, const char*);
+int PrintMoves(CharStack* stack, const char* outputPath); // Wypisuje ruchy na stosie do pliku
+
 
 #endif // CHAR_STACK_H

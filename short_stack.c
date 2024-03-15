@@ -1,49 +1,52 @@
 #include "short_stack.h"
 #include <stdlib.h>
+#include <stdio.h>
+#define START_SIZE 10
 
-// Initializes a new stack
-ShortStack* createShortStack() {
-    ShortStack* stack = (ShortStack*)malloc(sizeof(ShortStack));
+
+// Inicjalizuje nowy mini stos
+MiniIntStack* initMiniInt() {
+    MiniIntStack* stack = (MiniIntStack*)malloc(sizeof(MiniIntStack));
     if (stack == NULL) {
-        return NULL;
+        printf("Błąd alokacji pamięci");
+        exit(EXIT_FAILURE); // Kontrola niepowodzenia alokacji
     }
-    stack->top = NULL;
+
+    stack->top = -1; // Stos jest pusty
+    stack->max_size = START_SIZE; // Rozmiar początkowy stosu
+    stack->array = (short*)malloc(stack->max_size * sizeof(short));
+
+    if (stack->array == NULL) { 
+        free(stack); // W przypadku niepowodzenia zwolnij pamięć stack
+        exit(EXIT_FAILURE);
+    }
     return stack;
 }
 
-// Adds element to the top of the stack
-void pushShort(ShortStack* stack, short int data) {
-    ShortStackNode* newNode = (ShortStackNode*)malloc(sizeof(ShortStackNode));
-    if (newNode == NULL) {
-        return;
+// Dodaje wartość na wierzch stosu
+void pushMiniInt(MiniIntStack* stack, short value) {
+    if (stack->top == stack->max_size - 1) {
+        // Rozszerza stos, gdy nie ma więcej miejsca
+        stack->max_size *= 2;
+        stack->array = (short*)realloc(stack->array, stack->max_size * sizeof(short));
+        if (stack->array == NULL) {
+            exit(EXIT_FAILURE); // Kontrola niepowodzenia realokacji
+        }
     }
-    newNode->data = data;
-    newNode->next = stack->top;
-    stack->top = newNode;
+    
+    stack->array[++stack->top] = value;
 }
 
-// Removes and returns element from the top of the stack. If the stack is empty, returns -1.
-short int popShort(ShortStack* stack) {
-    if (isShortStackEmpty(stack)) {
-        return -1; // Stack is empty
+// Usuwa i zwraca wartość z wierzchu stosu
+short removeMiniInt(MiniIntStack* stack) {
+    if (stack->top == -1) {
+        return -1; // Pusty stos
     }
-    ShortStackNode* temp = stack->top;
-    short int poppedData = temp->data;
-    stack->top = temp->next;
-    free(temp);
-    return poppedData;
+    return stack->array[stack->top--];
 }
 
-// Deletes the stack and frees the allocated memory
-void deleteShortStack(ShortStack* stack) {
-    while (!isShortStackEmpty(stack)) {
-        popShort(stack); // Corrected function call
-    }
-    free(stack);
-}
-
-// Checks if the stack is empty
-bool isShortStackEmpty(ShortStack* stack) {
-    if(stack->top == NULL) return true;
-    return false;
+// Zwalnia pamięć zajmowaną przez stos
+void freeMiniInt(MiniIntStack* stack) {
+    free(stack->array); 
+    free(stack); 
 }
