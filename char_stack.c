@@ -23,6 +23,11 @@ void popCharMultiple(CharStack* stack, int popAmount) {
     stack->index -= popAmount;
 }
 
+char getMove(CharStack* stack, int index) {
+    fseek(stack->file, index, SEEK_SET);
+    char x = fgetc(stack->file);
+    return x;
+}
 
 // Funkcja usuwająca dynamiczną tablicę znaków
 void deleteCharStack(CharStack* stack) {
@@ -38,7 +43,7 @@ const char* getTurnDirection(char from, char to) {
         return "LEFT";
     }
 }
-/*
+
 int printMoves(CharStack* stack, const char* filename) {
 
     int l_ruch = 0;
@@ -54,25 +59,25 @@ int printMoves(CharStack* stack, const char* filename) {
 
     // Załóżmy, że orientacja początkowa to wschód ('E')
     char currentDirection = 'E'; // Początkowy kierunek
-    if (stack->index > 0 && stack->array[0] != currentDirection) {
+    if (stack->index > 0 && getMove(stack, 0) != currentDirection) {
         // Obróć się w kierunku pierwszego ruchu, jeśli to konieczne
-        getTurnDirection(currentDirection, stack->array[0]);
-        currentDirection = stack->array[0];
+        getTurnDirection(currentDirection, getMove(stack, 0));
+        currentDirection = getMove(stack, 0);
     }
 
     int streak = 1;
-    char previousDirection = stack->array[0]; // Zakładamy, że tablica nie jest pusta
+    char previousDirection = getMove(stack, 0); // Zakładamy, że tablica nie jest pusta
 
     for (int i = 1; i < stack->index; i++) {
         
         l_ruch++;
-        if (stack->array[i] == previousDirection) {
+        if (getMove(stack, i) == previousDirection) {
             streak++;
         } else {
             fprintf(file, "FORWARD %d\n", streak); // Wypisz poprzednią sekwencję ruchu
-            fprintf(file, "%s\n", getTurnDirection(previousDirection, stack->array[i])); // Wypisz skręt
+            fprintf(file, "%s\n", getTurnDirection(previousDirection, getMove(stack, i))); // Wypisz skręt
 
-            previousDirection = stack->array[i];
+            previousDirection = getMove(stack, i);
             streak = 1; // Resetuj licznik ruchów w nowym kierunku
         }
     }
@@ -83,4 +88,3 @@ int printMoves(CharStack* stack, const char* filename) {
     fclose(file);
     return l_ruch; // Zwróć 0, aby sygnalizować, że funkcja zakończyła się sukcesem
 }
-*/

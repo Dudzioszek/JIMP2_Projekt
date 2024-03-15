@@ -18,6 +18,8 @@ int PrintMoves(CharStack* stack, const char* outputPath); // Wypisuje ruchy na s
 
 const char* getTurnDirection(char , char );
 
+char getMove(CharStack*, int );
+
 int printMoves(CharStack *, const char* name);
 
 void deleteCharStack(CharStack *);

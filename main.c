@@ -102,8 +102,8 @@ int main() {
     freeInt(nodes);
 
     
-    //int movesCount = PrintMoves(allMoves, OUT);
-    //printf("Rozwiazanie sklada sie z %d ruchow\n", movesCount);
+    int movesCount = printMoves(allMoves, OUT);
+    printf("Rozwiazanie sklada sie z %d ruchow\n", movesCount);
    
     deleteCharStack(allMoves);
     
