@@ -14,5 +14,3 @@ void pushMiniInt(MiniIntStack* stack, short value); // Dodaje wartość na wierz
 short removeMiniInt(MiniIntStack* stack); // Usuwa i zwraca wartość z wierzchu stosu
 
 void freeMiniInt(MiniIntStack* stack); // Zwalnia pamięć zajmowaną przez stos
-
-#endif // STACK_H

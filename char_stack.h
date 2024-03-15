@@ -20,4 +20,6 @@ const char* getTurnDirection(char , char );
 
 int printMoves(CharStack *, const char* name);
 
+void deleteCharStack(CharStack *);
+
 #endif // CHAR_STACK_H

@@ -10,31 +10,6 @@
 #define IN "maze.txt"
 #define OUT "kroki.txt"
 
-void dodajSciezke(FILE *file, CharStack *moves, int start, int col) {
-    int cell = start;
-    int i = 0;
-    char move;
-    while(i <= moves->index) {       
-        move = moves->array[i];
-        writeCell(file, cell, col, '-');
-        switch(move) {
-                case 'N':
-                    cell -= col;
-                    break;
-                case 'S':
-                    cell += col;
-                    break;
-                case 'E':
-                    cell += 1;
-                    break;
-                case 'W':
-                    cell -= 1;
-                    break;
-            }
-        i++;
-        }
-}
-
 int main() {
     int rows = 0, cols = 0, start = 0, end = 0;
     // przechowuje dlugosc drogi od węzła do węzła
@@ -42,13 +17,15 @@ int main() {
     //zawiera priorytet kierunków, np: ESWN - prawo-dół-lewo-góra
     char directions[5];
     FILE *maze = fopen(IN, "r+");
+    FILE *stack = fopen("temp.txt", "w+");
+
     //komórka którą algorytm wybierze jako następną
     int nextCell;
     //liczba możliwości ruchu
     int routesCount = 1;
 
     //inicjalizuje stosy
-    CharStack *allMoves = initCharStack();
+    CharStack *allMoves = createCharStack(stack);
     IntStack *nodes = initInt();
     MiniIntStack *pathLens = initMiniInt();
 
@@ -94,7 +71,7 @@ int main() {
         switch(routesCount) {
             case 0:
                 currCell = removeInt(nodes);
-                removeMultiChar(allMoves, currPathLen);
+                popCharMultiple(allMoves, currPathLen);
                 currPathLen = removeMiniInt(pathLens);
                 break;
             case 1:
@@ -125,10 +102,10 @@ int main() {
     freeInt(nodes);
 
     
-    int movesCount = PrintMoves(allMoves, OUT);
-    printf("Rozwiazanie sklada sie z %d ruchow\n", movesCount);
+    //int movesCount = PrintMoves(allMoves, OUT);
+    //printf("Rozwiazanie sklada sie z %d ruchow\n", movesCount);
    
-    freeChar(allMoves);
+    deleteCharStack(allMoves);
     
     //Wypełniam P i K aby można było wyczyścić dawną ścieżkę
     writeCell(maze, start, cols, 'P');
@@ -136,6 +113,8 @@ int main() {
     //Usuwam z pliku ścieżkę
     restoreFile(maze);
     fclose(maze);
+    fclose(stack);
+    remove("temp.txt");
 
     return 0;
 }

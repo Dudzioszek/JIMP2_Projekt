@@ -32,8 +32,8 @@ def save_maze_to_file(maze, filename):
             f.write(''.join(row) + '\n')
 
 # Wymiary labiryntu (muszą być nieparzyste)
-width =	2049
-height = 2049
+width =	1025
+height = 1025
 
 maze = generate_maze(width, height)
 
