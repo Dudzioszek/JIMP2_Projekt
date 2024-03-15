@@ -28,14 +28,13 @@ int main() {
     MiniIntStack *pathLens = initMiniInt();
 
     //pobieram z pliku rozmiar labiryntu
-    checkSize(maze, &rows, &cols);
+    checkSizeAndGetData(maze, &rows, &cols, &start, &end);
 
     int mazeSize = rows*cols;
 
     //ta zmienna przechowuje sciany oraz przestrzen labiryntu
 
-    //zapelniam zmienna maze, start i end
-    getData(maze, cols, &start, &end);
+    
     //jesli nie zostanie wczytany początek lub koniec to nie ma roz.
     if(start == 0 || end == 0) {
         printf("Nie znaleziono poczatku lub konca labiryntu\n");
