@@ -12,4 +12,5 @@ char readCell(FILE*, int , int);
 void writeCell(FILE*, int , int , char );
 void restoreFile(FILE*);
 
+void checkSizeAndGetData(FILE *file, int *rows, int *cols, int *start, int *end);
 #endif

@@ -1,21 +1,20 @@
 #include <stdbool.h>
 
-// Definicja struktury dla elementu stosu
 
+
+// Definicja typu dla stosu liczbowego
 typedef struct {
-    int *array;
-    int index;
-    int capacity;
+    int *array; // Tablica na elementy stosu
+    int top; // Wskaźnik na wierzchołek stosu
+    int max_size; // Rozmiar stosu
 } IntStack;
 
-// Inicjalizuje nowy stos
-IntStack* createIntStack(int);
+// Prototypy funkcji dla stosu
 
-// Dodaje element na wierzchołek stosu
-void pushInt(IntStack* stack, int data);
+IntStack* initInt(); // 
 
-// Usuwa i zwraca element z wierzchołka stosu
-int popInt(IntStack* stack);
+void pushInt(IntStack* stack, int value); // 
 
-// Usuwa stos i zwalnia zaalokowaną pamięć
-void deleteIntStack(IntStack* stack);
+int removeInt(IntStack* stack); //
+
+void freeInt(IntStack* stack); //

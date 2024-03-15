@@ -48,19 +48,18 @@ int main() {
     int routesCount = 1;
 
     //inicjalizuje stosy
-    CharStack *allMoves = createCharStack(454000);
-    IntStack *nodes = createIntStack(7600);
-    ShortStack *pathLens = createShortStack(7600);
+    CharStack *allMoves = initCharStack();
+    IntStack *nodes = initInt();
+    MiniIntStack *pathLens = initMiniInt();
 
     //pobieram z pliku rozmiar labiryntu
-    checkSize(maze, &rows, &cols);
+    checkSizeAndGetData(maze, &rows, &cols, &start, &end);
 
     int mazeSize = rows*cols;
 
     //ta zmienna przechowuje sciany oraz przestrzen labiryntu
 
-    //zapelniam zmienna maze, start i end
-    getData(maze, cols, &start, &end);
+    
     //jesli nie zostanie wczytany początek lub koniec to nie ma roz.
     if(start == 0 || end == 0) {
         printf("Nie znaleziono poczatku lub konca labiryntu\n");
@@ -94,9 +93,9 @@ int main() {
         currMove = move(maze, directions, &nextCell, currCell, &routesCount, cols);
         switch(routesCount) {
             case 0:
-                currCell = popInt(nodes);
-                popCharMultiple(allMoves, currPathLen);
-                currPathLen = popShort(pathLens);
+                currCell = removeInt(nodes);
+                removeMultiChar(allMoves, currPathLen);
+                currPathLen = removeMiniInt(pathLens);
                 break;
             case 1:
                 pushChar(allMoves, currMove);
@@ -106,7 +105,7 @@ int main() {
                 break;
             default:
                 pushInt(nodes, currCell);
-                pushShort(pathLens, currPathLen);
+                pushMiniInt(pathLens, currPathLen);
                 currPathLen = 1;
                 currCell = nextCell;
                 writeCell(maze, currCell, cols, '-');
@@ -122,12 +121,14 @@ int main() {
     */
 
     //Zwalniam pamięć
-    deleteIntStack(nodes);
-    deleteShortStack(pathLens);
-    //reverseCharStack(allMoves);
-    int movesCount = printMoves(allMoves, OUT);
+    freeMiniInt(pathLens);
+    freeInt(nodes);
+
+    
+    int movesCount = PrintMoves(allMoves, OUT);
     printf("Rozwiazanie sklada sie z %d ruchow\n", movesCount);
-    deleteCharStack(allMoves);
+   
+    freeChar(allMoves);
     
     //Wypełniam P i K aby można było wyczyścić dawną ścieżkę
     writeCell(maze, start, cols, 'P');

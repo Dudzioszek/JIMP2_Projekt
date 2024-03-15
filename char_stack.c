@@ -33,9 +33,9 @@ void deleteCharStack(CharStack* stack) {
 const char* getTurnDirection(char from, char to) {
     if ((from == 'N' && to == 'E') || (from == 'E' && to == 'S') ||
         (from == 'S' && to == 'W') || (from == 'W' && to == 'N')) {
-        return "TURNRIGHT";
+        return "RIGHT";
     } else {
-        return "TURNLEFT";
+        return "LEFT";
     }
 }
 /*

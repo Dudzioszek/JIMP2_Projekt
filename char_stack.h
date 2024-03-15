@@ -9,14 +9,12 @@ typedef struct {
 // Inicjalizuje nowy stos
 CharStack* createCharStack(FILE*);
 
-// Dodaje element na wierzchołek stosu
-void pushChar(CharStack*, char);
+void pushChar(CharStack*, char); // Dodaje element na stos
 
 // Usuwa i zwraca element z wierzchołka stosu
 void popCharMultiple(CharStack*, int);
 
-// Usuwa x elementów ze stosu
-void deleteCharStack(CharStack*);
+int PrintMoves(CharStack* stack, const char* outputPath); // Wypisuje ruchy na stosie do pliku
 
 const char* getTurnDirection(char , char );
 

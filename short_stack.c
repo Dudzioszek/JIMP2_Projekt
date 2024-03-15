@@ -1,35 +1,54 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "short_stack.h"
+#include <stdlib.h>
+#include <stdio.h>
+#define START_SIZE 10
 
-// Funkcja tworząca nową dynamiczną tablicę znaków
-ShortStack* createShortStack(int capacity) {
-    ShortStack* stack = (ShortStack*)malloc(sizeof(ShortStack));
-    stack->index = 0;
-    stack->capacity = capacity;
-    stack->array = (int*)malloc(stack->capacity * sizeof(short int));
+
+// Inicjalizuje nowy mini stos
+MiniIntStack* initMiniInt() {
+    MiniIntStack* stack = (MiniIntStack*)malloc(sizeof(MiniIntStack));
+    if (stack == NULL) {
+        printf("Błąd alokacji pamięci");
+        exit(EXIT_FAILURE); // Kontrola niepowodzenia alokacji
+    }
+
+    stack->top = -1; // Stos jest pusty
+    stack->max_size = START_SIZE; // Rozmiar początkowy stosu
+    stack->array = (short*)malloc(stack->max_size * sizeof(short));
+
+    if (stack->array == NULL) { 
+        free(stack); // W przypadku niepowodzenia zwolnij pamięć stack
+        exit(EXIT_FAILURE);
+    }
     return stack;
 }
 
-// Funkcja dodająca znak na koniec dynamicznej tablicy
-void pushShort(ShortStack* stack, int element) {
-   if (stack->index == stack->capacity) {
-        printf("STOS PELNY!!!");
-        return;
+// Dodaje wartość na wierzch stosu
+void pushMiniInt(MiniIntStack* stack, short value) {
+    if (stack->top == stack->max_size - 1) {
+        // Rozszerza stos, gdy nie ma więcej miejsca
+        stack->max_size *= 2;
+        stack->array = (short*)realloc(stack->array, stack->max_size * sizeof(short));
+        if (stack->array == NULL) {
+            exit(EXIT_FAILURE); // Kontrola niepowodzenia realokacji
+        }
     }
-    stack->array[stack->index] = element;
-    stack->index++;
+    
+    stack->array[++stack->top] = value;
 }
 
-int popShort(ShortStack* stack) {
-    stack->index--;
-    int temp = stack->array[stack->index];
-    stack->array[stack->index] = -1;
-    return temp;
+// Usuwa i zwraca wartość z wierzchu stosu
+short removeMiniInt(MiniIntStack* stack) {
+    if (stack->top == -1) {
+        return -1; // Pusty stos
+    }
+    return stack->array[stack->top--];
 }
 
-// Funkcja usuwająca dynamiczną tablicę znaków
-void deleteShortStack(ShortStack* stack) {
-    free(stack->array);
-    free(stack);
+// Zwalnia pamięć zajmowaną przez stos
+void freeMiniInt(MiniIntStack* stack) {
+    free(stack->array); 
+    free(stack); 
 }

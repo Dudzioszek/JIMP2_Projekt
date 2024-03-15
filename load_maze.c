@@ -2,65 +2,52 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void checkSize(FILE *file, int *rows, int *cols) {
-    // Zczytywanie liczby kolumn
-    while (getc(file) != '\n') {
+
+void checkSizeAndGetData(FILE *file, int *rows, int *cols, int *start, int *end) {
+    *cols = 0;
+    int ch;
+
+    // Zczytywanie liczby kolumn do pierwszego znaku nowej linii
+    while ((ch = getc(file)) != '\n' && ch != EOF) {
         (*cols)++;
     }
 
-    // Tworzenie zmiennej pomocniczej line
-    char *line = (char *)malloc((*cols) * sizeof(char) + 1); // Alokacja pamięci na linię
+    if (*cols == 0) {
+        perror("Plik jest pusty lub błąd przy czytaniu pierwszej linii");
+        exit(EXIT_FAILURE);
+    }
+
+    char *line = (char *)malloc((*cols) + 2);
     if (line == NULL) {
         perror("Błąd alokacji pamięci");
         exit(EXIT_FAILURE);
     }
 
-    // Zczytywanie liczby wierszy
-    (*rows)++;
+    *rows = 1; // Zainicjalizuj rows jako 1, ponieważ mamy już pierwszą linię
+    rewind(file); // Upewnij się, że czytanie zaczyna się od początku pliku
+
+    *start = *end = -1; // Inicjalizacja start i end jako -1, aby oznaczyć nieznalezienie
+    int temp_row = 0;
+
     while (fgets(line, (*cols) + 2, file) != NULL) {
-        (*rows)++;
-    }
+        if (temp_row > 0) { // Liczenie wierszy zaczyna się od drugiego, ponieważ pierwszy już mamy
+            (*rows)++;
+        }
+        for (int temp_col = 0; temp_col < *cols; temp_col++) {
+            int index = temp_row * (*cols) + temp_col; // Obliczenie indeksu
 
-    // Zwalnianie pamięci po line
-    free(line);
-}
-
-
-void getData(FILE *file, int cols, int *start, int *end) {
-    // Otwarcie pliku
-    if (file == NULL) {
-        perror("Nie można otworzyć pliku lub znaleźć pliku z labiryntem");
-        exit(EXIT_FAILURE);
-    }
-    rewind(file);
-
-    //tworze zmienna pomocnicza line
-    char *line = (char*)malloc(cols * sizeof(char) + 1); // Allocate memory for the line
-    if (line == NULL) {
-        perror("Błąd alokacji pamięci");
-        exit(EXIT_FAILURE);
-    }
-
-    //tymczasowa kolumna i rzad
-    int temp_col, temp_row = 0, index;
-
-    //zapisuje w zmiennej maze kolejne elementy labiryntu
-    while (fgets(line, cols + 2, file)) {
-        temp_col = 0;
-        while (temp_col < cols) {
-            index = temp_row * cols + temp_col;  // Obliczenie indeksu w tablicy jednowymiarowej
-
-            //jesli znajde P lub K to zapisuje w start lub end
-            if(line[temp_col] == 'P') (*start) = index;
-            if(line[temp_col] == 'K') {
-                (*end) = index;
-            }
-            
-            temp_col++;
+            if (line[temp_col] == 'P' && *start == -1) *start = index; // Ustaw start, jeśli to pierwsze 'P'
+            else if (line[temp_col] == 'K' && *end == -1) *end = index; // Ustaw end, jeśli to pierwsze 'K'
         }
         temp_row++;
     }
-    free(line); 
+
+    if (*start == -1 || *end == -1) {
+        fprintf(stderr, "Nie znaleziono P lub K w pliku\n");
+        exit(EXIT_FAILURE);
+    }
+
+    free(line);
 }
 
 

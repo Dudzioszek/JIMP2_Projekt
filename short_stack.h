@@ -1,21 +1,18 @@
 #include <stdbool.h>
 
-// Definicja struktury dla elementu stosu
-
 typedef struct {
-    int *array;
-    int index;
-    int capacity;
-} ShortStack;
+    short *array; // tablica przechowująca elementy stosu
+    int top; // wielkość stosu
+    int max_size; // maksymalna wielkość stosu
+} MiniIntStack;
 
-// Inicjalizuje nowy stos
-ShortStack* createShortStack(int);
+// Prototypy funkcji dla mini stosu
+MiniIntStack* initMiniInt(); // Inicjalizuje nowy stos
 
-// Dodaje element na wierzchołek stosu
-void pushShort(ShortStack* stack, int data);
+void pushMiniInt(MiniIntStack* stack, short value); // Dodaje wartość na wierzch stosu
 
-// Usuwa i zwraca element z wierzchołka stosu
-int popShort(ShortStack* stack);
+short removeMiniInt(MiniIntStack* stack); // Usuwa i zwraca wartość z wierzchu stosu
 
-// Usuwa stos i zwalnia zaalokowaną pamięć
-void deleteShortStack(ShortStack* stack);
+void freeMiniInt(MiniIntStack* stack); // Zwalnia pamięć zajmowaną przez stos
+
+#endif // STACK_H
