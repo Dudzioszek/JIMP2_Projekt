@@ -48,9 +48,9 @@ int main() {
     int routesCount = 1;
 
     //inicjalizuje stosy
-    CharStack *allMoves = createCharStack();
-    IntStack *nodes = createIntStack();
-    ShortStack *pathLens = createShortStack();
+    CharStack *allMoves = createCharStack(350000);
+    IntStack *nodes = createIntStack(25000);
+    ShortStack *pathLens = createShortStack(25000);
 
     //pobieram z pliku rozmiar labiryntu
     checkSize(maze, &rows, &cols);

@@ -2,13 +2,11 @@
 #include <stdlib.h>
 #include "char_stack.h"
 
-#define INITIAL_CAPACITY 10
-
 // Funkcja tworząca nową dynamiczną tablicę znaków
-CharStack* createCharStack() {
+CharStack* createCharStack(int capacity) {
     CharStack* stack = (CharStack*)malloc(sizeof(CharStack));
     stack->index = 0;
-    stack->capacity = INITIAL_CAPACITY;
+    stack->capacity = capacity;
     stack->array = (char*)malloc(stack->capacity * sizeof(char));
     return stack;
 }
@@ -16,9 +14,8 @@ CharStack* createCharStack() {
 // Funkcja dodająca znak na koniec dynamicznej tablicy
 void pushChar(CharStack* stack, char element) {
     if (stack->index == stack->capacity) {
-        // Zwiększamy pojemność dwukrotnie
-        stack->capacity *= 2;
-        stack->array = (char*)realloc(stack->array, stack->capacity * sizeof(char));
+        printf("STOS PELNY!!!");
+        return;
     }
     stack->array[stack->index] = element;
     stack->index++;

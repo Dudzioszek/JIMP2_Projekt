@@ -8,7 +8,7 @@ typedef struct {
 } CharStack;
 
 // Inicjalizuje nowy stos
-CharStack* createCharStack();
+CharStack* createCharStack(int);
 
 // Dodaje element na wierzchołek stosu
 void pushChar(CharStack*, char);

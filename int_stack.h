@@ -9,7 +9,7 @@ typedef struct {
 } IntStack;
 
 // Inicjalizuje nowy stos
-IntStack* createIntStack();
+IntStack* createIntStack(int);
 
 // Dodaje element na wierzchołek stosu
 void pushInt(IntStack* stack, int data);

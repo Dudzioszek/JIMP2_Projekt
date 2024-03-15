@@ -5,20 +5,19 @@
 #define INITIAL_CAPACITY 10
 
 // Funkcja tworząca nową dynamiczną tablicę znaków
-IntStack* createIntStack() {
+IntStack* createIntStack(int capacity) {
     IntStack* stack = (IntStack*)malloc(sizeof(IntStack));
     stack->index = 0;
-    stack->capacity = INITIAL_CAPACITY;
+    stack->capacity = capacity;
     stack->array = (int*)malloc(stack->capacity * sizeof(int));
     return stack;
 }
 
 // Funkcja dodająca znak na koniec dynamicznej tablicy
 void pushInt(IntStack* stack, int element) {
-    if (stack->index == stack->capacity) {
-        // Zwiększamy pojemność dwukrotnie
-        stack->capacity *= 2;
-        stack->array = (int*)realloc(stack->array, stack->capacity * sizeof(int));
+   if (stack->index == stack->capacity) {
+        printf("STOS PELNY!!!");
+        return;
     }
     stack->array[stack->index] = element;
     stack->index++;

@@ -2,23 +2,20 @@
 #include <stdlib.h>
 #include "short_stack.h"
 
-#define INITIAL_CAPACITY 10
-
 // Funkcja tworząca nową dynamiczną tablicę znaków
-ShortStack* createShortStack() {
+ShortStack* createShortStack(int capacity) {
     ShortStack* stack = (ShortStack*)malloc(sizeof(ShortStack));
     stack->index = 0;
-    stack->capacity = INITIAL_CAPACITY;
-    stack->array = (int*)malloc(stack->capacity * sizeof(int));
+    stack->capacity = capacity;
+    stack->array = (int*)malloc(stack->capacity * sizeof(short int));
     return stack;
 }
 
 // Funkcja dodająca znak na koniec dynamicznej tablicy
 void pushShort(ShortStack* stack, int element) {
-    if (stack->index == stack->capacity) {
-        // Zwiększamy pojemność dwukrotnie
-        stack->capacity *= 2;
-        stack->array = (int*)realloc(stack->array, stack->capacity * sizeof(int));
+   if (stack->index == stack->capacity) {
+        printf("STOS PELNY!!!");
+        return;
     }
     stack->array[stack->index] = element;
     stack->index++;

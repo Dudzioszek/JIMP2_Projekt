@@ -9,7 +9,7 @@ typedef struct {
 } ShortStack;
 
 // Inicjalizuje nowy stos
-ShortStack* createShortStack();
+ShortStack* createShortStack(int);
 
 // Dodaje element na wierzchołek stosu
 void pushShort(ShortStack* stack, int data);
