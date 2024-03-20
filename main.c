@@ -39,8 +39,6 @@ int main() {
     int currCell = start;
     
     char currMove = firstMove(maze, &currCell, cols, mazeSize);
-
-    printf("Pierwszy ruch: %c\n", currMove);
     
     //kiedy program odwiedzi komórkę to zmienia ją z ' ' na '-'
     //writeCell(maze, currCell, cols, '-');
@@ -63,7 +61,8 @@ int main() {
 
     //Zwalniam pamięć
     deleteQueue(queue);
-    printMoves(maze, OUT, start, end, cols);
+    int counter = printMoves(maze, OUT, start, end, cols);
+    printf("Znaleziono sciezke od dlugosci: %d krokow\n", counter);
     //Usuwam znaki wypisane przez algorytm
     restoreFile(maze);
     //Wypełniam P i K

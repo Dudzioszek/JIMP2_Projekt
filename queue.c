@@ -31,7 +31,7 @@ void deleteQueue(Queue* queue) {
     free(queue);
 }
 
-void printMoves(FILE *maze, const char* filename, int start, int end, int col) {
+int printMoves(FILE *maze, const char* filename, int start, int end, int col) {
     FILE *out = fopen(filename, "w+");
     int cell = end;
     int i = 0, k = 1, counter = 0;
@@ -119,4 +119,5 @@ void printMoves(FILE *maze, const char* filename, int start, int end, int col) {
         j1+=2; j2-=2;
     }
     fclose(out);
+    return counter;
 }

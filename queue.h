@@ -12,6 +12,6 @@ Queue* initializeQueue();
 void push(Queue* queue, int data);
 int pop(Queue* queue);
 void deleteQueue(Queue* queue);
-void printMoves(FILE *, const char*, int, int, int);
+int printMoves(FILE *, const char*, int, int, int);
 
 #endif /* QUEUE_H */
