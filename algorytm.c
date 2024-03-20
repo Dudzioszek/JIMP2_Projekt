@@ -1,5 +1,6 @@
 #include "algorytm.h"
 #include "load_maze.h"
+#include "queue.h"
 #include <stdio.h>
 
 //wybieram priorytet ruchów
@@ -60,54 +61,24 @@ char firstMove(FILE *file, int *cell, int cols, int size) {
 }
 
 
-char move(FILE *file, char *directions, int *new_cell, int cell, int *count, int col) {
+char move(FILE *file, Queue *queue, int *routesPossible, int cell, int col) {
     // Ta zmienna informuje ile jest opcji ruchu w tej komórce
-    int j = 0;
+    (*routesPossible) = 0;
     // Kolejne przypadki N,S,E,W
     int opt[4] = {cell - col, cell + col, cell + 1, cell - 1};
     // Jeśli brak ruchu to zwraca X
+    char *moves = "NSEW";
     char move = 'X';
 
-    for (int i = 3; i >= 0; i--) {
-        switch (directions[i]) {
-            case 'N':
-                if (readCell(file, opt[0], col) == ' ') {
-                    *new_cell = opt[0];
-                    move = 'N';
-                    j++;
-                }
-                break;
-            case 'S':
-                if (readCell(file, opt[1], col) == ' ') {
-                    *new_cell = opt[1];
-                    move = 'S';
-                    j++;
-                }
-                break;
-            case 'E':
-                if (readCell(file, opt[2], col) == ' ') {
-                    *new_cell = opt[2];
-                    move = 'E';
-                    j++;
-                }
-                break;
-            case 'W':
-                if (readCell(file, opt[3], col) == ' ') {
-                    *new_cell = opt[3];
-                    move = 'W';
-                    j++;
-                }
-                break;
+    for (int i = 0; i <= 3; i++) {
+        if (readCell(file, opt[i], col) == ' ') {
+            push(queue, opt[i]);
+            (*routesPossible)++;
+            }
+        else if (readCell(file, opt[i], col) == '-') {
+            move = moves[i];
         }
     }
 
-    // W "new_cell" zostanie zapisana ostatnia (najnowsza) komórka
-    // Tak samo "move"
-    // Jeśli komórka jest dostępna to j++
-
-    // Count zawiera liczbę dostępnych komórek
-    (*count) = j;
-
-    // Zwracam jaki ruch wykona algorytm
     return move;
 }

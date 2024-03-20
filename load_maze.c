@@ -79,7 +79,7 @@ void restoreFile(FILE *file) {
     rewind(file);
     char znak;
     while ((znak = fgetc(file)) != EOF) {
-        if (znak == '-') {
+        if (znak != ' ' &&  znak != 'X' && znak != '\n') {
             fseek(file, -1, SEEK_CUR); // Przesuwa wskaźnik pliku o jeden bajt wstecz
             fputc(' ', file); // Zapisuje pusty znak w miejscu wystąpienia '-'
         }
