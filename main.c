@@ -12,12 +12,13 @@ int main() {
     int rows = 0, cols = 0, start = 0, end = 0;
     //zawiera priorytet kierunków, np: ESWN - prawo-dół-lewo-góra
     FILE *maze = fopen(IN, "r+");
+    FILE *temp = fopen("temp.txt", "w+");
 
     //liczba możliwości ruchu
     int routesCount = 1;
 
     //inicjalizuje kolejkę
-    Queue* queue = initializeQueue();
+    Queue* queue = initializeQueue(temp);
 
 
     //pobieram z pliku rozmiar labiryntu
@@ -70,8 +71,8 @@ int main() {
     writeCell(maze, end, cols, 'K');
     //Usuwam z pliku ścieżkę
     fclose(maze);
-    //fclose(stack);
-    //remove("temp.txt");
+    fclose(temp);
+    remove("temp.txt");
 
     return 0;
 }

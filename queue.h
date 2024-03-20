@@ -2,17 +2,12 @@
 #define QUEUE_H
 #include <stdio.h>
 
-typedef struct Node {
-    int data;
-    struct Node* next;
-} Node;
-
-typedef struct {
-    Node* front;
-    Node* rear;
+typedef struct Queue {
+    int front;
+    int rear;
+    FILE *file;
 } Queue;
 
-Node* createNode(int data);
 Queue* initializeQueue();
 void push(Queue* queue, int data);
 int pop(Queue* queue);

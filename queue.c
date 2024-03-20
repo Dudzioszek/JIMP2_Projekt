@@ -3,60 +3,31 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Node* createNode(int data) {
-    Node* newNode = (Node*)malloc(sizeof(Node));
-    if (newNode == NULL) {
-        printf("Memory allocation failed!\n");
-        exit(1);
-    }
-    newNode->data = data;
-    newNode->next = NULL;
-    return newNode;
-}
-
-Queue* initializeQueue() {
+Queue *initializeQueue(FILE * file) {
     Queue* queue = (Queue*)malloc(sizeof(Queue));
-    if (queue == NULL) {
-        printf("Memory allocation failed!\n");
-        exit(1);
-    }
-    queue->front = NULL;
-    queue->rear = NULL;
+    queue->front = 0;
+    queue->rear = 0;
+    queue->file = file;
     return queue;
 }
 
 void push(Queue* queue, int data) {
-    Node* newNode = createNode(data);
-    if (queue->rear == NULL) {
-        queue->front = newNode;
-        queue->rear = newNode;
-    } else {
-        queue->rear->next = newNode;
-        queue->rear = newNode;
-    }
+    fseek(queue->file, queue->rear, SEEK_SET);
+    //zakładam że data nie będzie dłuższa niż 7 cyfr
+    fprintf(queue->file, "%7d\n", data);
+    //rear inkrementuję o 8 ponieważ biorę jeszcze pod uwagę znak nowej linii
+    queue->rear += 8;
 }
 
 int pop(Queue* queue) {
-    if (queue->front == NULL) {
-        printf("Queue is empty!\n");
-        exit(1);
-    }
-    Node* temp = queue->front;
-    int data = temp->data;
-    queue->front = queue->front->next;
-    if (queue->front == NULL) {
-        queue->rear = NULL;
-    }
-    free(temp);
+    fseek(queue->file, queue->front, SEEK_SET);
+    int data;
+    fscanf(queue->file, "%d", &data);
+    queue->front += 8;
     return data;
 }
 
 void deleteQueue(Queue* queue) {
-    while (queue->front != NULL) {
-        Node* temp = queue->front;
-        queue->front = queue->front->next;
-        free(temp);
-    }
     free(queue);
 }
 
