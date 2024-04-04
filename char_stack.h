@@ -1,5 +1,7 @@
 #ifndef CHAR_STACK_H
 #define CHAR_STACK_H
+#include <stdio.h>
+#include <stdlib.h>
 
 typedef struct {
     FILE *file;

@@ -3,20 +3,29 @@
 #include "int_stack.h"
 #include "short_stack.h"
 #include "algorytm.h"
+#include "binary.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define IN "maze.txt"
+#define IN "mm.bin"
 #define OUT "kroki.txt"
 
 int main() {
     int rows = 0, cols = 0, start = 0, end = 0;
+    
     // przechowuje dlugosc drogi od węzła do węzła
     short int currPathLen = 0;
     //zawiera priorytet kierunków, np: ESWN - prawo-dół-lewo-góra
     char directions[5];
-    FILE *maze = fopen(IN, "r+");
+
+    const char* binaryFilePath = "maze (1).bin";
+    const char* textFilePath = "tempik.txt";
+
+    // Wywołanie funkcji konwertującej plik binarny na tekstowy
+    convertBinaryToText(binaryFilePath, textFilePath);
+
+    FILE *maze = fopen(textFilePath, "r+");
     FILE *stack = fopen("temp.txt", "w+");
 
     //komórka którą algorytm wybierze jako następną
@@ -104,17 +113,19 @@ int main() {
     
     int movesCount = printMoves(allMoves, OUT);
     printf("Rozwiazanie sklada sie z %d ruchow\n", movesCount);
+    updateBinaryFileWithSolution(binaryFilePath, movesCount);
    
     deleteCharStack(allMoves);
     
     //Wypełniam P i K aby można było wyczyścić dawną ścieżkę
     writeCell(maze, start, cols, 'P');
     writeCell(maze, end, cols, 'K');
-    //Usuwam z pliku ścieżkę
+    // Usuwam z pliku ścieżkę
     restoreFile(maze);
     fclose(maze);
     fclose(stack);
     remove("temp.txt");
+    remove("tempik.txt");
 
     return 0;
 }
