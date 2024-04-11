@@ -7,11 +7,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h> 
+
+
 
 #define IN "mm.bin"
-#define OUT "kroki.txt"
+#define OUT_DIR "output/"
+#define OUT OUT_DIR "kroki.txt"
 
-int main() {
+
+#define DEFAULT_FILE "maze.txt"
+
+// Funkcja sprawdzająca czy plik istnieje
+bool fileExists(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file) {
+        fclose(file);
+        return true;
+    }
+    return false;
+}
+
+// Funkcja sprawdzająca typ pliku
+int checkFileType(const char *filePath) {
+    const char *dot = strrchr(filePath, '.'); // usuwa wszystko przed ostatnim wystąpieniem '.'
+    if (!dot || dot == filePath) {
+        return -1; // No extension found
+    }
+    if (strcmp(dot, ".bin") == 0) {
+        return 1; // Plik binarny
+    } else if (strcmp(dot, ".txt") == 0) {
+        return 0; // Plik tekstowy
+    }
+    return -1; // Format nieobsługiwany
+}
+
+int main(int argc, char *argv[]) {
     int rows = 0, cols = 0, start = 0, end = 0;
     
     // przechowuje dlugosc drogi od węzła do węzła
@@ -19,11 +50,42 @@ int main() {
     //zawiera priorytet kierunków, np: ESWN - prawo-dół-lewo-góra
     char directions[5];
 
-    const char* binaryFilePath = "maze (1).bin";
     const char* textFilePath = "tempik.txt";
 
-    // Wywołanie funkcji konwertującej plik binarny na tekstowy
-    convertBinaryToText(binaryFilePath, textFilePath);
+
+    char filePath[256];
+
+    if (argc < 2) {
+        // Nie podano pliku, użyj domyślnego labiryntu
+        printf("Nie podano pliku, używanie domyślnego pliku: %s\n", DEFAULT_FILE);
+        strncpy(filePath, DEFAULT_FILE, sizeof(filePath));
+    } else {
+        snprintf(filePath, sizeof(filePath), "source/%s", argv[1]); // Dodaj ścieżkę do pliku
+        if (!fileExists(filePath)) {
+            // jeśli plik nie istnieje, użyj domyślnego labiryntu
+            strncpy(filePath, DEFAULT_FILE, sizeof(filePath));
+            printf("Podany plik nie istnieje. Używanie domyślnego pliku: %s\n", filePath);
+        } else {
+            printf("Używamy plik: %s\n", filePath);
+        }
+    }
+
+
+    // Sprawdzanie typ pliku
+    int fileType = checkFileType(filePath);
+    if (fileType == 1) {
+        printf("Podany plik is binarny.\n");
+        // Konwertowanie pliku binarnego na tekstowy
+        convertBinaryToText(filePath, textFilePath);
+        
+    } else if (fileType == 0) {
+        printf("Podany plik jest tekstowy.\n");
+        textFilePath = filePath;
+    } else {
+        printf("Nieobsługiwany format pliku.\n");
+        return -1;
+    }
+
 
     FILE *maze = fopen(textFilePath, "r+");
     FILE *stack = fopen("temp.txt", "w+");
@@ -113,7 +175,7 @@ int main() {
     
     int movesCount = printMoves(allMoves, OUT);
     printf("Rozwiazanie sklada sie z %d ruchow\n", movesCount);
-    updateBinaryFileWithSolution(binaryFilePath, movesCount);
+    // updateBinaryFileWithSolution(binaryFilePath, movesCount);
    
     deleteCharStack(allMoves);
     

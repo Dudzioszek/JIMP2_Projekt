@@ -88,7 +88,6 @@ void convertBinaryToText(const char* binaryFilePath, const char* textFilePath) {
     fseek(binaryFile, 12, SEEK_CUR); // Pomiń zarezerwowane bajty
     fread(&counter, sizeof(counter), 1, binaryFile);
     fread(&solutionOffset, sizeof(solutionOffset), 1, binaryFile);
-    printf("%d",solutionOffset);
     fread(&separator, sizeof(separator), 1, binaryFile);
     fread(&wall, sizeof(wall), 1, binaryFile);
     fread(&path, sizeof(path), 1, binaryFile);
