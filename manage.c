@@ -47,7 +47,7 @@ Arguments parseArguments(int argc, char* argv[]) {
                 char prefix[] = "source/";
                 args.fileName = malloc(strlen(prefix) + strlen(optarg) + 1);  // Allocate memory for the full path
                 if (args.fileName == NULL) {
-                    fprintf(stderr, "Memory allocation failed\n");
+                    fprintf(stderr, "Błąd alokacji pamieci\n");
                     exit(EXIT_FAILURE);
                 }
                 strcpy(args.fileName, prefix);
