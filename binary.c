@@ -107,11 +107,6 @@ void convertBinaryToText(const char* binaryFilePath, const char* textFilePath) {
 
 
 
-
-
-
-
-
 void updateBinaryFileWithSolution(const char* binaryFilePath, int move_count) {
      FILE *binaryFile = fopen(binaryFilePath, "r+b");
     if (binaryFile == NULL) {

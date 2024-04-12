@@ -67,7 +67,6 @@ int main(int argc, char *argv[]) {
     } else if (strcmp(args.algorithm, "bfs") == 0) {
         runBFS(maze);
     } 
-    //free(args.fileName);
 
     return 0;
 }
