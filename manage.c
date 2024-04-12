@@ -57,7 +57,7 @@ Arguments parseArguments(int argc, char* argv[]) {
                 break;
                 }
             case 'a':
-                f (strcmp(optarg, "dfs") == 0 || strcmp(optarg, "bfs") == 0) {
+                if (strcmp(optarg, "dfs") == 0 || strcmp(optarg, "bfs") == 0) {
                     args.algorithm = strdup(optarg);
                 } else {
                     fprintf(stderr, "Uwaga źle podany dany algrotytm: '%s'. Przełączam na dfs.\n", optarg);

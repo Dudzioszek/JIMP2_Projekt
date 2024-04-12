@@ -55,7 +55,6 @@ int main(int argc, char *argv[]) {
 
     FILE *maze = fopen(textFilePath, "r+");
 
-    
 
     if (maze == NULL) {
         perror("Błąd przy otwieraniu pliku");
@@ -64,13 +63,11 @@ int main(int argc, char *argv[]) {
 
     // Sprawdzanie jaki algorytm ma być użyty
     if (strcmp(args.algorithm, "dfs") == 0) {
-        printf("Algorytm DFS\n");
         runDFS(maze);
     } else if (strcmp(args.algorithm, "bfs") == 0) {
-        printf("Algorytm BFS\n");
         runBFS(maze);
     } 
-    free(args.fileName);
+    //free(args.fileName);
 
     return 0;
 }

@@ -129,9 +129,6 @@ void runDFS(FILE* maze) {
     // Inicjalizacja zmiennych
     int rows = 0, cols = 0, start = 0, end = 0;
 
-    printf("Rozpoczynam algorytm DFS\n");
-
-
     // 
     checkSizeAndGetData(maze, &rows, &cols, &start, &end);
 
@@ -146,8 +143,6 @@ void runDFS(FILE* maze) {
 
     FILE *stack = fopen("temp.txt", "w+");
 
-    printf("Po otwarciu pliku\n");
-
     //komórka którą algorytm wybierze jako następną
     int nextCell;
     //liczba możliwości ruchu
@@ -160,9 +155,6 @@ void runDFS(FILE* maze) {
     MiniIntStack *pathLens = initMiniInt();
     
 
-    printf("Po init");
-
-
     int mazeSize = rows*cols;
 
     //obecna komórka
@@ -172,8 +164,6 @@ void runDFS(FILE* maze) {
     printf("Priorytety kierunkow: %.4s\n", directions);
     
     char currMove = firstMove(maze, &currCell, cols, mazeSize);
-
-    printf("Pierwszy ruch: %c\n", currMove);
     
     //kiedy program odwiedzi komórkę to zmienia ją z ' ' na '-'
     writeCell(maze, currCell, cols, '-');
@@ -185,7 +175,7 @@ void runDFS(FILE* maze) {
     //dodaje ruch na stos
     pushChar(allMoves, currMove);
 
-    printf("Rozpoczynam algorytm...\n");
+    printf("Rozpoczynam algorytm DFS...\n");
 
     while(currCell != end) {
         //zbieram dane tj.: możliwe ruchy, ich liczba, współrzędne każdego z nich
@@ -215,12 +205,6 @@ void runDFS(FILE* maze) {
                 break;
         }
     }
-    
-    //Po włączeniu plik będzie zawierał ścieżkę wyjściową
-    /*
-        restoreFile(maze);
-        dodajSciezke(maze, allMoves, start, cols);
-    */
 
     //Zwalniam pamięć
     freeMiniInt(pathLens);

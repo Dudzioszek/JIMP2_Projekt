@@ -10,8 +10,6 @@
 IntStack* initInt() {
     IntStack* stack = (IntStack*)malloc(sizeof(IntStack)); // 
 
-    printf("Inicjalizacja stosu\n");
-
     if (stack == NULL) {
         printf("Błąd alokacji pamięci");
         exit(EXIT_FAILURE); // Nieudana alokacja pamięci

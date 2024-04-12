@@ -7,27 +7,6 @@
 #define OUT_DIR "output/"
 #define OUT OUT_DIR "kroki.txt"
 
-//wybieram priorytet ruchów
-void makePriob(char *directions, int rows, int cols, int end) {
-    //transformacja współrzędnej liniowej na dwa wymiary
-    int x = (end % cols) + 1;
-    int y = (end / cols) + 1;
-
-    //jeśli preferowany kierunek to VERTICAL, jako pierwszy wybieram kierunek pionowy
-    if (DIR_PREF == 'V') {
-        directions[0] = y >= rows / 2 ? 'S' : 'N';
-        directions[1] = x >= cols / 2 ? 'E' : 'W';
-    } else { // Zakładam że DIR_PREF == 'H'
-        directions[0] = x >= cols / 2 ? 'E' : 'W';
-        directions[1] = y >= rows / 2 ? 'S' : 'N';
-    }
-
-    // W drugim przypadku wyniki są poprostu zamieniane
-    directions[2] = directions[0] == 'S' ? 'N' : (directions[0] == 'N' ? 'S' : (directions[0] == 'E' ? 'W' : 'E'));
-    directions[3] = directions[1] == 'E' ? 'W' : (directions[1] == 'W' ? 'E' : (directions[1] == 'S' ? 'N' : 'S'));
-
-    directions[4] = '\0';
-}
 
 //funkcja wykonująca pierwszy ruch
 char firstMoveb(FILE *file, int *cell, int cols, int size) {
@@ -121,7 +100,7 @@ void runBFS(FILE* maze) {
     //Usuwam tymczasowo K z mapy aby algorytm traktował je jako przestrzeń
     writeCell(maze, end, cols, ' ');
 
-    printf("Rozpoczynam algorytm...\n");
+    printf("Rozpoczynam algorytm BFS...\n");
 
     while(currCell != end) {
         //zbieram dane tj.: możliwe ruchy, ich liczba, współrzędne każdego z nich
