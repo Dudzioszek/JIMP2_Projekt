@@ -57,7 +57,16 @@ Arguments parseArguments(int argc, char* argv[]) {
                 break;
                 }
             case 'a':
-                args.algorithm = strdup(optarg);
+                f (strcmp(optarg, "dfs") == 0 || strcmp(optarg, "bfs") == 0) {
+                    args.algorithm = strdup(optarg);
+                } else {
+                    fprintf(stderr, "Uwaga źle podany dany algrotytm: '%s'. Przełączam na dfs.\n", optarg);
+                    args.algorithm = strdup("dfs");
+                }
+                if (args.algorithm == NULL) {
+                    fprintf(stderr, "Błąd alokacji pamięci.\n");
+                    exit(EXIT_FAILURE);
+                }
                 break;
             default:
                 exit(EXIT_FAILURE);
