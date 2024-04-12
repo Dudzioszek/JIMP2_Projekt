@@ -44,7 +44,15 @@ Arguments parseArguments(int argc, char* argv[]) {
     while ((opt = getopt(argc, argv, "n:a:")) != -1) {
         switch (opt) {
             case 'n':
-                args.fileName = strdup(optarg);
+                char prefix[] = "source/";
+                args.fileName = malloc(strlen(prefix) + strlen(optarg) + 1);  // Allocate memory for the full path
+                if (args.fileName == NULL) {
+                    fprintf(stderr, "Memory allocation failed\n");
+                    exit(EXIT_FAILURE);
+                }
+                strcpy(args.fileName, prefix);
+                strcat(args.fileName, optarg);
+                printf("File name: %s\n", args.fileName);
                 break;
             case 'a':
                 args.algorithm = strdup(optarg);

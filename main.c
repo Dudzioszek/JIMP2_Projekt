@@ -70,6 +70,7 @@ int main(int argc, char *argv[]) {
         printf("Algorytm BFS\n");
         runBFS(maze);
     } 
+    free(args.fileName);
 
     return 0;
 }
