@@ -58,7 +58,6 @@ Arguments parseArguments(int argc, char* argv[]) {
                 args.algorithm = strdup(optarg);
                 break;
             default:
-                fprintf(stderr, "Usage: %s [-n file_name] [-a algorithm]\n", argv[0]);
                 exit(EXIT_FAILURE);
         }
     }
