@@ -42,10 +42,15 @@ void checkSizeAndGetData(FILE *file, int *rows, int *cols, int *start, int *end)
         temp_row++;
     }
 
+    printf("Wczytano labirynt o wymiarach %dx%d\n", *rows, *cols);
+    printf("Start: %d, End: %d\n", *start, *end);
+
     if (*start == -1 || *end == -1) {
         fprintf(stderr, "Nie znaleziono P lub K w pliku\n");
         exit(EXIT_FAILURE);
     }
+
+
 
     free(line);
 }

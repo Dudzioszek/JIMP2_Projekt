@@ -10,18 +10,25 @@
 IntStack* initInt() {
     IntStack* stack = (IntStack*)malloc(sizeof(IntStack)); // 
 
+    printf("Inicjalizacja stosu\n");
+
     if (stack == NULL) {
         printf("Błąd alokacji pamięci");
         exit(EXIT_FAILURE); // Nieudana alokacja pamięci
     }
     stack->top = -1; // Stos jest pusty
+   
     stack->max_size = BASE_SIZE;
+    
     stack->array = (int*)malloc(stack->max_size * sizeof(int));
     
+    
     if (stack->array == NULL) {
+        printf("Błąd alokacji pamięci");
         free(stack); // Zwolnij pamięć przydzieloną dla struktury stosu, jeśli nie można przydzielić pamięci na elementy
         exit(EXIT_FAILURE);
     }
+    
 
     return stack;
 }

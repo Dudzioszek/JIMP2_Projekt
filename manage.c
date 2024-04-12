@@ -1,0 +1,59 @@
+#include "manage.h"
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+
+
+// Funkcja sprawdzająca czy plik istnieje
+bool fileExists(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file) {
+        fclose(file);
+        return true;
+    }
+    return false;
+}
+
+// Funkcja sprawdzająca typ pliku
+int checkFileType(const char *filePath) {
+    const char *dot = strrchr(filePath, '.'); // usuwa wszystko przed ostatnim wystąpieniem '.'
+    if (!dot || dot == filePath) {
+        return -1; // No extension found
+    }
+    if (strcmp(dot, ".bin") == 0) {
+        return 1; // Plik binarny
+    } else if (strcmp(dot, ".txt") == 0) {
+        return 0; // Plik tekstowy
+    }
+    return -1; // Format nieobsługiwany
+}
+
+
+Arguments parseArguments(int argc, char* argv[]) {
+    Arguments args = { .fileName = "maze.txt", .algorithm = "dfs" }; // Domyślne wartości
+
+    int opt;
+    while ((opt = getopt(argc, argv, "n:a:")) != -1) {
+        switch (opt) {
+            case 'n':
+                args.fileName = strdup(optarg);
+                break;
+            case 'a':
+                args.algorithm = strdup(optarg);
+                break;
+            default:
+                fprintf(stderr, "Usage: %s [-n file_name] [-a algorithm]\n", argv[0]);
+                exit(EXIT_FAILURE);
+        }
+    }
+
+    return args;
+}
