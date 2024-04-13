@@ -209,20 +209,26 @@ void runDFS(FILE* maze) {
     //Zwalniam pamięć
     freeMiniInt(pathLens);
     freeInt(nodes);
-
     
     int movesCount = printMoves(allMoves, OUT);
     printf("Znaleziono sciezke od dlugosci: %d\n", movesCount + 1);
     // updateBinaryFileWithSolution(binaryFilePath, movesCount);
-   
-    deleteCharStack(allMoves);
     
     //Wypełniam P i K aby można było wyczyścić dawną ścieżkę
     writeCell(maze, start, cols, 'P');
     writeCell(maze, end, cols, 'K');
     // Usuwam z pliku ścieżkę
     restoreFile(maze, '*');
+    
+    FILE * mazeWithPath = fopen("output/labiryntZeSciezka.txt", "w+");
+    copyFile(maze, mazeWithPath);
+    addPathToFile(allMoves, mazeWithPath, cols, start);
+    writeCell(mazeWithPath, start, cols, 'P');
+    writeCell(mazeWithPath, end, cols, 'K');
+
+    deleteCharStack(allMoves);
     fclose(maze);
+    fclose(mazeWithPath);
     fclose(stack);
     remove("temp.txt");
     remove("tempik.txt");

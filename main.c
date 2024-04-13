@@ -24,9 +24,6 @@
 #define DEFAULT_FILE "maze.txt"
 #define DEFAULT_ALGORITHM "dfs"
 
-
-
-
 int main(int argc, char *argv[]) {
 
 

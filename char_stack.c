@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "char_stack.h"
+#include "load_maze.h"
 
 // Funkcja tworząca nową dynamiczną tablicę znaków
 CharStack* createCharStack(FILE *file) {
@@ -87,4 +88,30 @@ int printMoves(CharStack* stack, const char* filename) {
     fprintf(file, "STOP\n"); // Zakończ sekwencję
     fclose(file);
     return l_ruch; // Zwróć 0, aby sygnalizować, że funkcja zakończyła się sukcesem
+}
+
+void addPathToFile(CharStack* stack, FILE* output, int col, int start) {
+    char move;
+    int indeks = start;
+    for (int i = 0; i < stack->index; i++) {
+        move = getMove(stack, i);
+        switch (move)
+        {
+        case 'N':
+            indeks -= col;
+            break;
+        case 'S':
+            indeks += col;
+            break;
+        case 'E':
+            indeks++;
+            break;
+        case 'W':
+            indeks--;
+            break;
+        default:
+            break;
+        }
+        writeCell(output, indeks, col, '*');
+    }
 }
