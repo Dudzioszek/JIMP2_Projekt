@@ -195,7 +195,7 @@ void runDFS(FILE* maze) {
                 currPathLen++;
                 break;
             default:
-                
+
                 pushInt(nodes, currCell);
                 pushMiniInt(pathLens, currPathLen);
                 currPathLen = 1;
@@ -212,7 +212,7 @@ void runDFS(FILE* maze) {
 
     
     int movesCount = printMoves(allMoves, OUT);
-    printf("Rozwiazanie sklada sie z %d ruchow\n", movesCount);
+    printf("Znaleziono sciezke od dlugosci: %d\n", movesCount + 1);
     // updateBinaryFileWithSolution(binaryFilePath, movesCount);
    
     deleteCharStack(allMoves);

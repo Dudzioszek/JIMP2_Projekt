@@ -115,7 +115,7 @@ void runBFS(FILE* maze) {
     //Zwalniam pamięć
     deleteQueue(queue);
     int counter = printMovesq(maze, OUT, start, end, cols);
-    printf("Znaleziono sciezke od dlugosci: %d krokow\n", counter);
+    printf("Znaleziono sciezke od dlugosci: %d\n", counter);
     //Usuwam znaki wypisane przez algorytm
     restoreFile(maze, '*');
     FILE* outWithPath = fopen(OUTPATHFILE, "w+");
