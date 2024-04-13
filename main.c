@@ -52,9 +52,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
-
     FILE *maze = fopen(textFilePath, "r+");
-
 
     if (maze == NULL) {
         perror("Błąd przy otwieraniu pliku");

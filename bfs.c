@@ -5,7 +5,7 @@
 
 #define OUT_DIR "output/"
 #define OUT OUT_DIR "kroki.txt"
-#define OUTPATHFILE "output/labiryntZeSciezka"
+#define OUTPATHFILE "output/labiryntZeSciezka.txt"
 
 //funkcja wykonująca pierwszy ruch
 char firstMoveb(FILE *file, int *cell, int cols, int size) {
@@ -68,7 +68,6 @@ char moveb(FILE *file, Queue *queue, int *routesPossible, int cell, int col) {
 
 void runBFS(FILE* maze) {
 
-
     // Inicjalizacja zmiennych
     int rows = 0, cols = 0, start = 0, end = 0;
 
@@ -114,7 +113,8 @@ void runBFS(FILE* maze) {
 
     //Zwalniam pamięć
     deleteQueue(queue);
-    int counter = printMovesq(maze, OUT, start, end, cols);
+    int counter = printMovesq(maze, "output/krokiTemp.txt", start, end, cols);
+    translateSteps("output/krokiTemp.txt",  OUT, counter);
     printf("Znaleziono sciezke od dlugosci: %d\n", counter);
     //Usuwam znaki wypisane przez algorytm
     restoreFile(maze, '*');
@@ -132,4 +132,5 @@ void runBFS(FILE* maze) {
     fclose(temp);
     fclose(outWithPath);
     remove("temp.txt");
+    remove("output/krokiTemp.txt");
 }

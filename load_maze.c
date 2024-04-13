@@ -95,3 +95,4 @@ void restoreFile(FILE *file, char additionalChar) {
     }
 }
 
+

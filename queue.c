@@ -1,5 +1,6 @@
 #include "queue.h"
 #include "load_maze.h"
+#include "char_stack.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -119,4 +120,36 @@ int printMovesq(FILE *maze, const char* filename, int start, int end, int col) {
     }
     fclose(out);
     return counter;
+}
+
+void translateSteps(const char * inPath, const char * outPath, int movesAmount) {
+    FILE * inFile = fopen(inPath, "r+");
+    FILE * outFile = fopen(outPath, "w+");
+    fprintf(outFile, "START\n");
+    fseek(inFile, 0, SEEK_SET);
+
+    int streak = 1;
+    char currentDirection = fgetc(inFile);
+    char previousDirection = currentDirection; // Zakładamy, że tablica nie jest pusta
+    char c;
+
+    for (int i = 1; i < movesAmount; i++) {
+        
+        fseek(inFile, 2*i, SEEK_SET);
+        if ((c = fgetc(inFile)) == previousDirection) {
+            streak++;
+        } else {
+            fprintf(outFile, "FORWARD %d\n", streak); // Wypisz poprzednią sekwencję ruchu
+            fprintf(outFile, "%s\n", getTurnDirection(previousDirection, c)); // Wypisz skręt
+
+            previousDirection = c;
+            streak = 1; // Resetuj licznik ruchów w nowym kierunku
+        }
+    }
+
+    // Wypisz ostatnią sekwencję ruchów
+    fprintf(outFile, "FORWARD %d\n", streak);
+    fprintf(outFile, "STOP\n"); // Zakończ sekwencję
+    fclose(outFile);
+    fclose(inFile);
 }
