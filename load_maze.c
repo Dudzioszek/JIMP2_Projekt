@@ -75,6 +75,27 @@ void writeCell(FILE *file, int index, int col, char character) {
     fputc(character, file);
 }
 
+void copyFile(FILE *sourceFile, const char *destinationPath) {
+    FILE *destinationFile;
+    char ch;
+
+    // Open the destination file in write mode
+    destinationFile = fopen(destinationPath, "w");
+    if (destinationFile == NULL) {
+        printf("Unable to create file %s\n", destinationPath);
+        fclose(sourceFile);
+        return;
+    }
+
+    // Copy contents character by character
+    while ((ch = fgetc(sourceFile)) != EOF) {
+        fputc(ch, destinationFile);
+    }
+
+    // Close files
+    fclose(sourceFile);
+    fclose(destinationFile);
+}
 
 void restoreFile(FILE *file) {
     if (file == NULL) {

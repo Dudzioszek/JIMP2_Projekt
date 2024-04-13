@@ -10,6 +10,7 @@ void getData(FILE*, int, int*, int*);
 
 char readCell(FILE*, int , int);
 void writeCell(FILE*, int , int , char );
+void copyFile(FILE *, const char *);
 void restoreFile(FILE*);
 
 void checkSizeAndGetData(FILE *file, int *rows, int *cols, int *start, int *end);
