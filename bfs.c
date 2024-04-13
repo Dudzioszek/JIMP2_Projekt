@@ -3,10 +3,9 @@
 #include "queue.h"
 #include <stdio.h>
 
-
 #define OUT_DIR "output/"
 #define OUT OUT_DIR "kroki.txt"
-
+#define OUTPATHFILE "output/labiryntZeSciezka"
 
 //funkcja wykonująca pierwszy ruch
 char firstMoveb(FILE *file, int *cell, int cols, int size) {
@@ -118,12 +117,19 @@ void runBFS(FILE* maze) {
     int counter = printMovesq(maze, OUT, start, end, cols);
     printf("Znaleziono sciezke od dlugosci: %d krokow\n", counter);
     //Usuwam znaki wypisane przez algorytm
-    restoreFile(maze);
-    //Wypełniam P i K
+    restoreFile(maze, '*');
+    FILE* outWithPath = fopen(OUTPATHFILE, "w+");
+    copyFile(maze, outWithPath);
+    restoreFile(maze, '-');
+    //Wypełniam P i K w maze
     writeCell(maze, start, cols, 'P');
     writeCell(maze, end, cols, 'K');
+    //Wypełniam P i K w outWithPath
+    writeCell(outWithPath, start, cols, 'P');
+    writeCell(outWithPath, end, cols, 'K');
     //Usuwam z pliku ścieżkę
     fclose(maze);
     fclose(temp);
+    fclose(outWithPath);
     remove("temp.txt");
 }

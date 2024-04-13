@@ -55,7 +55,6 @@ void checkSizeAndGetData(FILE *file, int *rows, int *cols, int *start, int *end)
     free(line);
 }
 
-
 char readCell(FILE *file, int index, int col) {
     // Przesuwanie kursora pliku do odpowiedniego miejsca
     int k = index + (index / col); // Poprawka na nowe linie
@@ -75,37 +74,21 @@ void writeCell(FILE *file, int index, int col, char character) {
     fputc(character, file);
 }
 
-void copyFile(FILE *sourceFile, const char *destinationPath) {
-    FILE *destinationFile;
+void copyFile(FILE *sourceFile, FILE *destinationFile) {
     char ch;
-
+    rewind(sourceFile);
     // Open the destination file in write mode
-    destinationFile = fopen(destinationPath, "w");
-    if (destinationFile == NULL) {
-        printf("Unable to create file %s\n", destinationPath);
-        fclose(sourceFile);
-        return;
-    }
-
     // Copy contents character by character
     while ((ch = fgetc(sourceFile)) != EOF) {
         fputc(ch, destinationFile);
     }
-
-    // Close files
-    fclose(sourceFile);
-    fclose(destinationFile);
 }
 
-void restoreFile(FILE *file) {
-    if (file == NULL) {
-        printf("Nie udało się otworzyć pliku.\n");
-        return;
-    }
+void restoreFile(FILE *file, char additionalChar) {
     rewind(file);
     char znak;
     while ((znak = fgetc(file)) != EOF) {
-        if (znak != 'X' && znak != 'P' && znak != 'K' && znak != '\n') {
+        if (znak != 'X' && znak != 'P' && znak != 'K' && znak != '\n' && znak != additionalChar) {
             fseek(file, -1, SEEK_CUR); // Przesuwa wskaźnik pliku o jeden bajt wstecz
             fputc(' ', file); // Zapisuje pusty znak w miejscu wystąpienia '-'
         }

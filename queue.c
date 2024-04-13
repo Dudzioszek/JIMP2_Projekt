@@ -37,8 +37,7 @@ int printMovesq(FILE *maze, const char* filename, int start, int end, int col) {
     int i = 0, k = 1, counter = 0;
     int opt[4] = {-col, col, 1, -1};
 
-    // Jeśli brak ruchu to zwraca X
-    //NSEW
+    //NSEW - przeciwne kierunki
     char *moves = "SNWE";
     char move = 'X';
 
@@ -52,47 +51,47 @@ int printMovesq(FILE *maze, const char* filename, int start, int end, int col) {
             case 'N':
                 fprintf(out, "%c\n", moves[i]);
                 cell += opt[i];
-                writeCell(maze, cell, col, 'o');
+                writeCell(maze, cell, col, '*');
                 fprintf(out, "%c\n", 'S');
                 cell -= col;
-                writeCell(maze, cell, col, '0');
+                writeCell(maze, cell, col, '*');
                 counter+=2;
                 k = 0;
                 break;
             case 'S':
                 fprintf(out, "%c\n", moves[i]);
                 cell += opt[i];
-                writeCell(maze, cell, col, 'o');
+                writeCell(maze, cell, col, '*');
                 fprintf(out, "%c\n", 'N');
                 cell += col;
-                writeCell(maze, cell, col, 'o');
+                writeCell(maze, cell, col, '*');
                 counter+=2;
                 k = 0;
                 break;
             case 'E':
                 fprintf(out, "%c\n", moves[i]);
                 cell += opt[i];
-                writeCell(maze, cell, col, 'o');
+                writeCell(maze, cell, col, '*');
                 fprintf(out, "%c\n", 'W');
                 cell += 1;
-                writeCell(maze, cell, col, 'o');
+                writeCell(maze, cell, col, '*');
                 counter+=2;
                 k = 0;
                 break;
             case 'W':
                 fprintf(out, "%c\n", moves[i]);
                 cell += opt[i];
-                writeCell(maze, cell, col, 'o');
+                writeCell(maze, cell, col, '*');
                 fprintf(out, "%c\n", 'E');
                 cell -= 1;
-                writeCell(maze, cell, col, 'o');
+                writeCell(maze, cell, col, '*');
                 counter+=2;
                 k = 0;
                 break;
             case '-':
                 fprintf(out, "%c\n", moves[i]);
                 cell += opt[i];
-                writeCell(maze, cell, col, 'o');
+                writeCell(maze, cell, col, '*');
                 counter++;
                 move = moves[i];
                 k = 0;

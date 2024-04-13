@@ -221,7 +221,7 @@ void runDFS(FILE* maze) {
     writeCell(maze, start, cols, 'P');
     writeCell(maze, end, cols, 'K');
     // Usuwam z pliku ścieżkę
-    restoreFile(maze);
+    restoreFile(maze, '*');
     fclose(maze);
     fclose(stack);
     remove("temp.txt");
