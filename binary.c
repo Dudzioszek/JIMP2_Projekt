@@ -1,4 +1,5 @@
 #include "binary.h"
+#include "load_maze.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -6,11 +7,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <stddef.h> // Potrzebne dla offsetof
+#include <stddef.h> 
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+
+#define FILE_ID 0x52524243
 
 uint8_t directionToBin(char direction) {
     switch (direction) {
@@ -109,7 +112,8 @@ void convertBinaryToText(const char* binaryFilePath, const char* textFilePath) {
 
 
 
-
+#define FILE_ID 0x52524243
+#define ESCAPE 0x1B
 
 
 void updateBinaryFileWithSolution(const char* binaryFilePath, int move_count) {
@@ -163,4 +167,116 @@ void updateBinaryFileWithSolution(const char* binaryFilePath, int move_count) {
     fclose(solutionFile);
     fclose(binaryFile);
     printf("Plik binarny został zaktualizowany o sekcję rozwiązania.\n");
+}
+    
+
+void writeMazeToBinary(const char* textFilePath, const char* binaryFilePath, int move_count) {
+    MazeDimensions dims = analyzeMaze(textFilePath);
+    if (dims.columns == 0 || dims.lines == 0) {
+        fprintf(stderr, "Invalid maze dimensions.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    FILE *textFile = fopen(textFilePath, "r");
+    FILE *binaryFile = fopen(binaryFilePath, "wb");
+    if (!textFile || !binaryFile) {
+        perror("Error opening files");
+        exit(EXIT_FAILURE);
+    }
+
+    uint32_t fileId = FILE_ID;
+    uint8_t escape = ESCAPE;
+    uint32_t counter = 0;
+    uint32_t solutionOffset = 0;
+
+    fwrite(&fileId, sizeof(fileId), 1, binaryFile);
+    fwrite(&escape, sizeof(escape), 1, binaryFile);
+    fwrite(&dims.columns, sizeof(dims.columns), 1, binaryFile);
+    fwrite(&dims.lines, sizeof(dims.lines), 1, binaryFile);
+    fwrite(&dims.entryX, sizeof(dims.entryX), 1, binaryFile);
+    fwrite(&dims.entryY, sizeof(dims.entryY), 1, binaryFile);
+    fwrite(&dims.exitX, sizeof(dims.exitX), 1, binaryFile);
+    fwrite(&dims.exitY, sizeof(dims.exitY), 1, binaryFile);
+    fseek(binaryFile, 12, SEEK_CUR); // zarezerwowane bajty
+
+    char line[1024];
+    uint8_t separator = 0xF0, wall = 'X', path = ' ';
+
+    while (fgets(line, sizeof(line), textFile)) {
+        int length = strlen(line);
+        if (line[length - 1] == '\n') line[length - 1] = '\0';  // Usuń znak nowej linii
+
+        char previousChar = '\0';
+        int runLength = 0;
+        for (int i = 0; i < dims.columns; i++) {
+            char currentChar = line[i];
+            if (currentChar == previousChar) {
+                runLength++;
+            } else {
+                if (runLength > 0) {
+                    fwrite(&separator, sizeof(separator), 1, binaryFile);
+                    uint8_t value = (previousChar == wall) ? wall : path;
+                    fwrite(&value, sizeof(value), 1, binaryFile);
+                    uint8_t count = runLength - 1;
+                    fwrite(&count, sizeof(count), 1, binaryFile);
+                    counter++;
+                }
+                previousChar = currentChar;
+                runLength = 1;
+            }
+        }
+        if (runLength > 0) {
+            fwrite(&separator, sizeof(separator), 1, binaryFile);
+            uint8_t value = (previousChar == wall) ? wall : path;
+            fwrite(&value, sizeof(value), 1, binaryFile);
+            uint8_t count = runLength - 1;
+            fwrite(&count, sizeof(count), 1, binaryFile);
+            counter++;
+        }
+    }
+
+    // dostosowanie offsetu rozwiązania
+    solutionOffset = ftell(binaryFile);
+
+    // przechodzenie na koniec pliku, aby zaktualizować offset rozwiązania
+    fseek(binaryFile, 36, SEEK_SET); 
+    fwrite(&solutionOffset, sizeof(solutionOffset), 1, binaryFile);
+
+    // powrót na koniec pliku, aby dodać sekcję rozwiązania
+    fseek(binaryFile, 0, SEEK_END);
+
+    // Zapisanie nagłówka sekcji rozwiązania
+    uint32_t directionIdentifier = 0x52524243; // Identfikator sekcji rozwiązania
+    fwrite(&directionIdentifier, sizeof(directionIdentifier), 1, binaryFile);
+
+    
+    uint8_t steps = (uint8_t)move_count;
+    fwrite(&steps, sizeof(steps), 1, binaryFile);
+
+    FILE *solutionFile = fopen("temp.txt", "r");
+    if (solutionFile == NULL) {
+        perror("Nie można otworzyć pliku z rozwiązaniem");
+        fclose(binaryFile);
+        exit(EXIT_FAILURE);
+    }
+
+    char direction;
+    uint8_t counterss = 1; // licznik wystąpień do zapisania
+    while ((direction = fgetc(solutionFile)) != EOF) {
+        if (direction == '\n' || direction == '\r') continue;
+
+        uint8_t dirBin = directionToBin(direction);
+        // Sprawdź, czy potrzebne jest zapisanie poprzedniego kroku
+        if (dirBin != 0xFF) {
+            
+            fwrite(&dirBin, sizeof(dirBin), 1, binaryFile);
+            fwrite(&counterss, sizeof(counter), 1, binaryFile);
+            counterss = 0; // resetowanie licznika po każdym kroku
+        }
+        counterss++;
+    }
+
+    fclose(solutionFile);
+    fclose(binaryFile);
+    printf("Binary file successfully written with maze and optional solution.\n");
 }

@@ -31,6 +31,7 @@ int main(int argc, char *argv[]) {
 
 
     const char* textFilePath = "tempik.txt";
+    const char* binaryFilePath = "solution.bin";
 
 
     // Parsowanie argumentów
@@ -61,13 +62,20 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
+    int moves_count = 0;
     // Sprawdzanie jaki algorytm ma być użyty
     if (strcmp(args.algorithm, "dfs") == 0) {
-        runDFS(maze);
+        moves_count = runDFS(maze);
     } else if (strcmp(args.algorithm, "bfs") == 0) {
-        runBFS(maze);
+        moves_count = runBFS(maze);
     } 
-    //free(args.fileName);
+    
+    writeMazeToBinary(textFilePath,binaryFilePath,moves_count);
+
+    remove("temp.txt");
+    remove("tempik.txt");
+
+    
 
     return 0;
 }

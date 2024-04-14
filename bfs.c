@@ -67,7 +67,7 @@ char moveb(FILE *file, Queue *queue, int *routesPossible, int cell, int col) {
 }
 
 
-void runBFS(FILE* maze) {
+int runBFS(FILE* maze) {
 
 
     // Inicjalizacja zmiennych
@@ -125,5 +125,6 @@ void runBFS(FILE* maze) {
     //Usuwam z pliku ścieżkę
     fclose(maze);
     fclose(temp);
-    remove("temp.txt");
+
+    return counter;
 }

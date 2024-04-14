@@ -3,4 +3,4 @@
 #include <stdlib.h>
 
 
-void runDFS(FILE* maze);
+int runDFS(FILE* maze);

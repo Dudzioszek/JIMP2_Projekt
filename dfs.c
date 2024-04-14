@@ -123,7 +123,7 @@ char move(FILE *file, char *directions, int *new_cell, int cell, int *count, int
     return move;
 }
 
-void runDFS(FILE* maze) {
+int runDFS(FILE* maze) {
 
 
     // Inicjalizacja zmiennych
@@ -224,7 +224,8 @@ void runDFS(FILE* maze) {
     restoreFile(maze);
     fclose(maze);
     fclose(stack);
-    remove("temp.txt");
-    remove("tempik.txt");
+    
+
+    return movesCount;
 
 }

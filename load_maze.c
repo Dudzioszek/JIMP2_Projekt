@@ -1,7 +1,56 @@
 #include "load_maze.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
+
+
+
+MazeDimensions analyzeMaze(const char* textFilePath) {
+    FILE *file = fopen(textFilePath, "r");
+    if (!file) {
+        perror("Failed to open text file");
+        exit(EXIT_FAILURE);
+    }
+
+    MazeDimensions dims = {0, 0, -1, -1, -1, -1};
+    char line[1024]; // Buffer to store each line of the maze
+    int y = 0;       // Current line number
+
+    while (fgets(line, sizeof(line), file)) {
+        int length = strlen(line);
+        if (line[length - 1] == '\n') {
+            line[length - 1] = '\0'; // Remove newline character
+            length--;
+        }
+
+        if (dims.columns == 0) {
+            dims.columns = length; // Set the number of columns
+        }
+
+        for (int x = 0; x < length; x++) {
+            if (line[x] == 'P') {
+                dims.entryX = x;
+                dims.entryY = y;
+            } else if (line[x] == 'K') {
+                dims.exitX = x;
+                dims.exitY = y;
+            }
+        }
+
+        y++; // Increment line counter
+    }
+    dims.lines = y; // Set the total number of lines
+
+    fclose(file);
+
+    if (dims.entryX == -1 || dims.exitX == -1) {
+        fprintf(stderr, "Entry or exit point not found in the maze\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return dims;
+}
 
 void checkSizeAndGetData(FILE *file, int *rows, int *cols, int *start, int *end) {
     *cols = 0;

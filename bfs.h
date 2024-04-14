@@ -3,5 +3,5 @@
 #include "queue.h"
 
 
-void runBFS(FILE* maze);
+int runBFS(FILE* maze);
 

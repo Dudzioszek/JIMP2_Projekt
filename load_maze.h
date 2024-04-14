@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #ifndef LOAD_MAZE_H
 #define LOAD_MAZE_H
 
@@ -13,4 +14,16 @@ void writeCell(FILE*, int , int , char );
 void restoreFile(FILE*);
 
 void checkSizeAndGetData(FILE *file, int *rows, int *cols, int *start, int *end);
+
+typedef struct {
+    int columns;      // Width of the maze
+    int lines;        // Height of the maze
+    int entryX;       // X-coordinate of the entry
+    int entryY;       // Y-coordinate of the entry
+    int exitX;        // X-coordinate of the exit
+    int exitY;        // Y-coordinate of the exit
+} MazeDimensions;
+
+MazeDimensions analyzeMaze(const char* textFilePath);
+
 #endif
