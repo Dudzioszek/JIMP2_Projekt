@@ -41,7 +41,7 @@ Arguments parseArguments(int argc, char* argv[]) {
     Arguments args = { .fileName = "maze.txt", .algorithm = "dfs" }; // Domyślne wartości
 
     int opt;
-    while ((opt = getopt(argc, argv, "n:a:")) != -1) {
+    while ((opt = getopt(argc, argv, "n:a:p")) != -1) {
         switch (opt) {
             case 'n':
                 {
@@ -53,7 +53,7 @@ Arguments parseArguments(int argc, char* argv[]) {
                 }
                 strcpy(args.fileName, prefix);
                 strcat(args.fileName, optarg);
-                printf("File name: %s\n", args.fileName);
+                printf("Nazwa pliku: %s\n", args.fileName);
                 break;
                 }
             case 'a':
@@ -68,7 +68,15 @@ Arguments parseArguments(int argc, char* argv[]) {
                     exit(EXIT_FAILURE);
                 }
                 break;
+            case 'p':
+                printf("\n#POMOC#\n");
+                printf("  -n <nazwa_pliku>    Określ nazwę pliku z labiryntem, musi być w folderze 'source' (domyślnie: maze.txt)\n");
+                printf("  -a <algorytm>       Wybierz algorytm do rozwiązania labiryntu (dfs lub bfs, domyślnie: dfs)\n");
+                exit(EXIT_SUCCESS);
+            
             default:
+                printf("\nWpisz -p żeby otrzymać pomoc.\n\n");
+                exit(-1);
                 exit(EXIT_FAILURE);
         }
     }
