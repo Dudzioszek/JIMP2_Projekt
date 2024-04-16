@@ -123,17 +123,9 @@ char move(FILE *file, char *directions, int *new_cell, int cell, int *count, int
     return move;
 }
 
-int runDFS(FILE* maze) {
+int runDFS(FILE* maze,MazeDim dims) {
 
-
-    // Inicjalizacja zmiennych
-    int rows = 0, cols = 0, start = 0, end = 0;
-
-    // 
-    checkSizeAndGetData(maze, &rows, &cols, &start, &end);
-
-
-    
+        
     // przechowuje dlugosc drogi od węzła do węzła
     short int currPathLen = 0;
     //zawiera priorytet kierunków, np: ESWN - prawo-dół-lewo-góra
@@ -155,21 +147,21 @@ int runDFS(FILE* maze) {
     MiniIntStack *pathLens = initMiniInt();
     
 
-    int mazeSize = rows*cols;
+    int mazeSize = dims.rows*dims.columns;
 
     //obecna komórka
-    int currCell = start;
+    int currCell = dims.start;
     //ustalam priorytet poruszania sie
-    makePrio(directions, rows, cols, end);
+    makePrio(directions, dims.rows, dims.columns, dims.end);
     printf("Priorytety kierunkow: %.4s\n", directions);
     
-    char currMove = firstMove(maze, &currCell, cols, mazeSize);
+    char currMove = firstMove(maze, &currCell, dims.columns, mazeSize);
     
     //kiedy program odwiedzi komórkę to zmienia ją z ' ' na '-'
-    writeCell(maze, currCell, cols, '-');
-    writeCell(maze, start, cols, '-');
+    writeCell(maze, currCell, dims.columns, '-');
+    writeCell(maze, dims.start, dims.columns, '-');
     //Usuwam tymczasowo K z mapy aby algorytm traktował je jako przestrzeń
-    writeCell(maze, end, cols, ' ');
+    writeCell(maze, dims.end, dims.columns, ' ');
     currPathLen++;
 
     //dodaje ruch na stos
@@ -177,9 +169,9 @@ int runDFS(FILE* maze) {
 
     printf("Rozpoczynam algorytm DFS...\n");
 
-    while(currCell != end) {
+    while(currCell != dims.end) {
         //zbieram dane tj.: możliwe ruchy, ich liczba, współrzędne każdego z nich
-        currMove = move(maze, directions, &nextCell, currCell, &routesCount, cols);
+        currMove = move(maze, directions, &nextCell, currCell, &routesCount, dims.columns);
         switch(routesCount) {
             case 0:
                 
@@ -191,7 +183,7 @@ int runDFS(FILE* maze) {
                 
                 pushChar(allMoves, currMove);
                 currCell = nextCell;
-                writeCell(maze, currCell, cols, '-');
+                writeCell(maze, currCell, dims.columns, '-');
                 currPathLen++;
                 break;
             default:
@@ -200,7 +192,7 @@ int runDFS(FILE* maze) {
                 pushMiniInt(pathLens, currPathLen);
                 currPathLen = 1;
                 currCell = nextCell;
-                writeCell(maze, currCell, cols, '-');
+                writeCell(maze, currCell, dims.columns, '-');
                 pushChar(allMoves, currMove);
                 break;
         }
@@ -216,16 +208,16 @@ int runDFS(FILE* maze) {
     // updateBinaryFileWithSolution(binaryFilePath, movesCount);
     
     //Wypełniam P i K aby można było wyczyścić dawną ścieżkę
-    writeCell(maze, start, cols, 'P');
-    writeCell(maze, end, cols, 'K');
+    writeCell(maze, dims.start, dims.columns, 'P');
+    writeCell(maze, dims.end, dims.columns, 'K');
     // Usuwam z pliku ścieżkę
     restoreFile(maze, '*');
     
     FILE * mazeWithPath = fopen("output/labiryntZeSciezka.txt", "w+");
     copyFile(maze, mazeWithPath);
-    addPathToFile(allMoves, mazeWithPath, cols, start);
-    writeCell(mazeWithPath, start, cols, 'P');
-    writeCell(mazeWithPath, end, cols, 'K');
+    addPathToFile(allMoves, mazeWithPath, dims.columns, dims.start);
+    writeCell(mazeWithPath, dims.start, dims.columns, 'P');
+    writeCell(mazeWithPath, dims.end, dims.columns, 'K');
 
     deleteCharStack(allMoves);
     fclose(maze);

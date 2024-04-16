@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "char_stack.h"
+#include "load_maze.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -19,51 +21,6 @@
 #define ESCAPE 0x1B
 
 
-
-MazeDimensions analyzeMaze(const char* textFilePath) { // Funkcja analizująca labirynt
-    FILE *file = fopen(textFilePath, "r");
-    if (!file) {
-        perror("Failed to open text file");
-        exit(EXIT_FAILURE);
-    }
-
-    MazeDimensions dims = {0, 0, -1, -1, -1, -1}; // Inicjalizacja struktury
-    char line[1024]; 
-    int y = 0;      
-
-    while (fgets(line, sizeof(line), file)) { // Odczytanie linii z pliku
-        int length = strlen(line); // Długość linii
-        if (line[length - 1] == '\n') {
-            line[length - 1] = '\0'; 
-            length--;
-        }
-
-        if (dims.columns == 0) {
-            dims.columns = length; // Ustawienie liczby kolumn
-        }
-
-        for (int x = 0; x < length; x++) {
-            if (line[x] == 'P') { // Sprawdzenie, czy znaleziono wejście
-                dims.entryX = x;
-                dims.entryY = y;
-            } else if (line[x] == 'K') { // Sprawdzenie, czy znaleziono wyjście
-                dims.exitX = x;
-                dims.exitY = y;
-            }
-        }
-
-        y++; 
-    }
-    dims.lines = y; // Ustawienie liczby wierszy
-    fclose(file);
-
-    if (dims.entryX == -1 || dims.exitX == -1) {
-        fprintf(stderr, "Wejście i wyjście labiryntu nie zostało znalezione\n");
-        exit(EXIT_FAILURE);
-    }
-
-    return dims;
-}
 
 
 uint8_t directionToBin(char direction) { // Funkcja zamieniająca kierunek na wartość binarną
@@ -161,9 +118,10 @@ void convertBinaryToText(const char* binaryFilePath, const char* textFilePath) {
 
 
 
-void writeMazeToBinary(const char* textFilePath, const char* binaryFilePath, int move_count) {
-    MazeDimensions dims = analyzeMaze(textFilePath); // Analiza labiryntu z pliku tekstowego
-    if (dims.columns == 0 || dims.lines == 0) {
+void writeMazeToBinary(const char* textFilePath, const char* binaryFilePath, int move_count, MazeDim dims) {
+
+
+    if (dims.columns == 0 || dims.rows == 0) {
         fprintf(stderr, "Niepoprawne wymiaru labiryntu.\n");
         exit(EXIT_FAILURE);
     }
@@ -191,7 +149,7 @@ void writeMazeToBinary(const char* textFilePath, const char* binaryFilePath, int
     fwrite(&fileId, sizeof(fileId), 1, binaryFile);
     fwrite(&escape, sizeof(escape), 1, binaryFile);
     fwrite(&dims.columns, sizeof(dims.columns), 1, binaryFile);
-    fwrite(&dims.lines, sizeof(dims.lines), 1, binaryFile);
+    fwrite(&dims.rows, sizeof(dims.rows), 1, binaryFile);
     fwrite(&dims.entryX, sizeof(dims.entryX), 1, binaryFile);
     fwrite(&dims.entryY, sizeof(dims.entryY), 1, binaryFile);
     fwrite(&dims.exitX, sizeof(dims.exitX), 1, binaryFile);

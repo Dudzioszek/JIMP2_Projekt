@@ -55,19 +55,22 @@ int main(int argc, char *argv[]) {
 
     FILE *maze = fopen(textFilePath, "r+");
 
+    MazeDim dims = analyzeMazeAndFindPositions(maze);
+
     if (maze == NULL) {
         perror("Błąd przy otwieraniu pliku");
         return -1;
     }
-    int moves_count =0;
+    int moves_count = 0;
     // Sprawdzanie jaki algorytm ma być użyty
     if (strcmp(args.algorithm, "dfs") == 0) {
-        moves_count = runDFS(maze);
+        printf("Wybrano algorytm DFS\n");
+        moves_count = runDFS(maze, dims);
     } else if (strcmp(args.algorithm, "bfs") == 0) {
-        moves_count = runBFS(maze);
+        moves_count = runBFS(maze,dims);
     } 
 
-    writeMazeToBinary(textFilePath, binFilePath, moves_count);
+    writeMazeToBinary(textFilePath, binFilePath, moves_count, dims);
 
 
     remove("temp.txt");

@@ -66,10 +66,9 @@ char moveb(FILE *file, Queue *queue, int *routesPossible, int cell, int col) {
 }
 
 
-int runBFS(FILE* maze) {
+int runBFS(FILE* maze,MazeDim dims) {
 
-    // Inicjalizacja zmiennych
-    int rows = 0, cols = 0, start = 0, end = 0;
+    
 
     FILE *temp = fopen("temp.txt", "w+");
 
@@ -82,30 +81,29 @@ int runBFS(FILE* maze) {
 
 
     //pobieram z pliku rozmiar labiryntu
-    checkSizeAndGetData(maze, &rows, &cols, &start, &end);
 
-    int mazeSize = rows*cols;
+    int mazeSize = dims.rows*dims.columns;
 
 
     //obecna komórka
-    int currCell = start;
+    int currCell = dims.start;
     
-    char currMove = firstMoveb(maze, &currCell, cols, mazeSize);
+    char currMove = firstMoveb(maze, &currCell, dims.columns, mazeSize);
     
     //kiedy program odwiedzi komórkę to zmienia ją z ' ' na '-'
     //writeCell(maze, currCell, cols, '-');
-    writeCell(maze, start, cols, '-');
+    writeCell(maze, dims.start, dims.columns, '-');
     //Usuwam tymczasowo K z mapy aby algorytm traktował je jako przestrzeń
-    writeCell(maze, end, cols, ' ');
+    writeCell(maze, dims.end, dims.columns, ' ');
 
     printf("Rozpoczynam algorytm BFS...\n");
 
-    while(currCell != end) {
+    while(currCell != dims.end) {
         //zbieram dane tj.: możliwe ruchy, ich liczba, współrzędne każdego z nich
-        currMove = moveb(maze, queue, &routesCount, currCell, cols);
-        writeCell(maze, currCell, cols, '-');
+        currMove = moveb(maze, queue, &routesCount, currCell, dims.columns);
+        writeCell(maze, currCell, dims.columns, '-');
         if(routesCount > 1) {
-            writeCell(maze, currCell, cols, currMove);
+            writeCell(maze, currCell, dims.columns, currMove);
         }
         currCell = pop(queue);
     }
@@ -113,7 +111,7 @@ int runBFS(FILE* maze) {
 
     //Zwalniam pamięć
     deleteQueue(queue);
-    int counter = printMovesq(maze, "output/krokiTemp.txt", start, end, cols);
+    int counter = printMovesq(maze, "output/krokiTemp.txt", dims.start, dims.end, dims.columns);
     translateSteps("output/krokiTemp.txt",  OUT, counter);
     printf("Znaleziono sciezke od dlugosci: %d\n", counter);
     //Usuwam znaki wypisane przez algorytm
@@ -122,16 +120,17 @@ int runBFS(FILE* maze) {
     copyFile(maze, outWithPath);
     restoreFile(maze, '-');
     //Wypełniam P i K w maze
-    writeCell(maze, start, cols, 'P');
-    writeCell(maze, end, cols, 'K');
+    writeCell(maze, dims.start, dims.columns, 'P');
+    writeCell(maze, dims.end, dims.columns, 'K');
     //Wypełniam P i K w outWithPath
-    writeCell(outWithPath, start, cols, 'P');
-    writeCell(outWithPath, end, cols, 'K');
+    writeCell(outWithPath, dims.start, dims.columns, 'P');
+    writeCell(outWithPath, dims.end, dims.columns, 'K');
     //Usuwam z pliku ścieżkę
     fclose(maze);
     fclose(temp);
     fclose(outWithPath);
     remove("output/krokiTemp.txt");
+
 
     return counter;
 }
