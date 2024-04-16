@@ -66,7 +66,7 @@ char moveb(FILE *file, Queue *queue, int *routesPossible, int cell, int col) {
 }
 
 
-void runBFS(FILE* maze) {
+int runBFS(FILE* maze) {
 
     // Inicjalizacja zmiennych
     int rows = 0, cols = 0, start = 0, end = 0;
@@ -131,6 +131,7 @@ void runBFS(FILE* maze) {
     fclose(maze);
     fclose(temp);
     fclose(outWithPath);
-    remove("temp.txt");
     remove("output/krokiTemp.txt");
+
+    return counter;
 }

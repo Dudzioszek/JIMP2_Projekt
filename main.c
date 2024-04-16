@@ -24,10 +24,14 @@
 #define DEFAULT_FILE "maze.txt"
 #define DEFAULT_ALGORITHM "dfs"
 
+#define BIN_OUTPUT "output/output.bin"
+
 int main(int argc, char *argv[]) {
 
 
     const char* textFilePath = "tempik.txt";
+
+    const char* binFilePath = BIN_OUTPUT;
 
 
     // Parsowanie argumentów
@@ -55,13 +59,18 @@ int main(int argc, char *argv[]) {
         perror("Błąd przy otwieraniu pliku");
         return -1;
     }
-
+    int moves_count =0;
     // Sprawdzanie jaki algorytm ma być użyty
     if (strcmp(args.algorithm, "dfs") == 0) {
-        runDFS(maze);
+        moves_count = runDFS(maze);
     } else if (strcmp(args.algorithm, "bfs") == 0) {
-        runBFS(maze);
+        moves_count = runBFS(maze);
     } 
+
+    writeMazeToBinary(textFilePath, binFilePath, moves_count);
+
+
+    remove("temp.txt");
 
     return 0;
 }

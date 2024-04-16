@@ -50,6 +50,7 @@ void checkSizeAndGetData(FILE *file, int *rows, int *cols, int *start, int *end)
         exit(EXIT_FAILURE);
     }
 
+    //printuj
 
 
     free(line);

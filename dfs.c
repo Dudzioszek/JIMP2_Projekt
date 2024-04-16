@@ -123,7 +123,7 @@ char move(FILE *file, char *directions, int *new_cell, int cell, int *count, int
     return move;
 }
 
-void runDFS(FILE* maze) {
+int runDFS(FILE* maze) {
 
 
     // Inicjalizacja zmiennych
@@ -211,7 +211,8 @@ void runDFS(FILE* maze) {
     freeInt(nodes);
     
     int movesCount = printMoves(allMoves, OUT);
-    printf("Znaleziono sciezke od dlugosci: %d\n", movesCount + 1);
+    movesCount++;
+    printf("Znaleziono sciezke od dlugosci: %d\n", movesCount);
     // updateBinaryFileWithSolution(binaryFilePath, movesCount);
     
     //Wypełniam P i K aby można było wyczyścić dawną ścieżkę
@@ -230,7 +231,7 @@ void runDFS(FILE* maze) {
     fclose(maze);
     fclose(mazeWithPath);
     fclose(stack);
-    remove("temp.txt");
-    remove("tempik.txt");
+    
+    return movesCount;
 
 }
