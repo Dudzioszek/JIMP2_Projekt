@@ -9,6 +9,9 @@
 
 //funkcja wykonująca pierwszy ruch
 char firstMoveb(FILE *file, int *cell, int cols, int size) {
+
+    // Sprawdzam czy komórka nie jest na krawędzi
+    
     if (*cell - cols < 0) {
         (*cell) += cols;
         return 'S';
