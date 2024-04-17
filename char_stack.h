@@ -18,14 +18,14 @@ void popCharMultiple(CharStack*, int);
 
 int PrintMoves(CharStack*, const char*); // Wypisuje ruchy na stosie do pliku
 
-const char* getTurnDirection(char , char );
+const char* getTurnDirection(char , char ); // Zwraca kierunek skrętu
 
-char getMove(CharStack*, int );
+char getMove(CharStack*, int ); // Zwraca ruch na danym indeksie
 
-int printMoves(CharStack *, const char*);
+int printMoves(CharStack *, const char*); // Wypisuje ruchy na stosie do pliku
 
-void deleteCharStack(CharStack *);
+void deleteCharStack(CharStack *); // Usuwa stos
 
-void addPathToFile(CharStack*, FILE*, int, int);
+void addPathToFile(CharStack*, FILE*, int, int); // Dodaje ścieżkę do pliku
 
 #endif // CHAR_STACK_H

@@ -33,6 +33,8 @@ uint8_t directionToBin(char direction) { // Funkcja zamieniająca kierunek na wa
     }
 }
 
+
+// Funkcja zapisująca labirynt w formie txt
 void generateMazeFromEncoding(FILE *binaryFile, FILE *textFile, uint32_t wordCount, uint8_t separator, uint8_t wall, uint8_t path, uint16_t cols, uint16_t rows, uint16_t entryX, uint16_t entryY, uint16_t exitX, uint16_t exitY) {
     uint8_t byte, value, countByte;
     int32_t cellsProcessed = 0;
@@ -69,6 +71,8 @@ void generateMazeFromEncoding(FILE *binaryFile, FILE *textFile, uint32_t wordCou
     }
 }
 
+
+// Funkcja konwertująca plik binarny na plik tekstowy
 void convertBinaryToText(const char* binaryFilePath, const char* textFilePath) {
     FILE *binaryFile = fopen(binaryFilePath, "rb");
     if (!binaryFile) {
@@ -118,6 +122,8 @@ void convertBinaryToText(const char* binaryFilePath, const char* textFilePath) {
 
 
 
+
+// Funkcja zapisująca labirynt w formie binarnej
 void writeMazeToBinary(const char* textFilePath, const char* binaryFilePath, int move_count, MazeDim dims) {
 
 
