@@ -18,12 +18,16 @@ void pushChar(CharStack* stack, char element) {
     stack->index++;
 }
 
+
+// Funkcja usuwająca znak z końca dynamicznej tablicy
 void popCharMultiple(CharStack* stack, int popAmount) {
     fseek(stack->file, -popAmount, SEEK_END);
     fputc(' ', stack->file);
     stack->index -= popAmount;
 }
 
+
+// Funkcja zwracająca znak z dynamicznej tablicy na podanym indeksie
 char getMove(CharStack* stack, int index) {
     fseek(stack->file, index, SEEK_SET);
     char x = fgetc(stack->file);
@@ -45,6 +49,8 @@ const char* getTurnDirection(char from, char to) {
     }
 }
 
+
+// Funkcja zapisująca ruchy do pliku
 int printMoves(CharStack* stack, const char* filename) {
 
     int l_ruch = 0;
@@ -90,6 +96,8 @@ int printMoves(CharStack* stack, const char* filename) {
     return l_ruch; // Zwróć 0, aby sygnalizować, że funkcja zakończyła się sukcesem
 }
 
+
+// Funkcja zapisująca ścieżke do pliku
 void addPathToFile(CharStack* stack, FILE* output, int col, int start) {
     char move;
     int indeks = start;

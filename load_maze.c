@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-
+// Funkcja zwracająca wymiary labiryntu oraz pozycje startu i mety
 MazeDim analyzeMazeAndFindPositions(FILE *file) {
     int cols = 0;
     int ch;
@@ -62,6 +62,7 @@ MazeDim analyzeMazeAndFindPositions(FILE *file) {
 }
 
 
+// Funkcja wczytująca labirynt z pliku do tablicy
 char readCell(FILE *file, int index, int col) {
     // Przesuwanie kursora pliku do odpowiedniego miejsca
     int k = index + (index / col); // Poprawka na nowe linie
@@ -71,6 +72,8 @@ char readCell(FILE *file, int index, int col) {
     return x;
 }
 
+
+// Funkcja zapisująca znak do pliku
 void writeCell(FILE *file, int index, int col, char character) {
     // Obliczamy indeks wiersza i kolumny na podstawie indeksu liniowego
     int k = index + (index / col); // Poprawka na nowe linie
@@ -81,6 +84,8 @@ void writeCell(FILE *file, int index, int col, char character) {
     fputc(character, file);
 }
 
+
+// Funkcja kopiująca zawartość jednego pliku do drugiego
 void copyFile(FILE *sourceFile, FILE *destinationFile) {
     char ch;
     rewind(sourceFile);
@@ -91,6 +96,8 @@ void copyFile(FILE *sourceFile, FILE *destinationFile) {
     }
 }
 
+
+// Funkcja przywracająca oryginalny plik z labiryntem
 void restoreFile(FILE *file, char additionalChar) {
     rewind(file);
     char znak;

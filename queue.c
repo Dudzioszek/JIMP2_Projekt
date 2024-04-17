@@ -12,6 +12,8 @@ Queue *initializeQueue(FILE * file) {
     return queue;
 }
 
+
+// Funkcja dodająca element do kolejki
 void push(Queue* queue, int data) {
     fseek(queue->file, queue->rear, SEEK_SET);
     //zakładam że data nie będzie dłuższa niż 7 cyfr
@@ -20,6 +22,8 @@ void push(Queue* queue, int data) {
     queue->rear += 8;
 }
 
+
+// Funkcja usuwająca element z kolejki
 int pop(Queue* queue) {
     fseek(queue->file, queue->front, SEEK_SET);
     int data;
@@ -28,10 +32,13 @@ int pop(Queue* queue) {
     return data;
 }
 
+
 void deleteQueue(Queue* queue) {
     free(queue);
 }
 
+
+//  Zapisuje ruchy do pliku
 int printMovesq(FILE *maze, const char* filename, int start, int end, int col) {
     FILE *out = fopen(filename, "w+");
     int cell = end;
@@ -122,6 +129,8 @@ int printMovesq(FILE *maze, const char* filename, int start, int end, int col) {
     return counter;
 }
 
+
+// Funckcja tłumacząca ruchy na kierunki
 void translateSteps(const char * inPath, const char * outPath, int movesAmount) {
     FILE * inFile = fopen(inPath, "r+");
     FILE * outFile = fopen(outPath, "w+");

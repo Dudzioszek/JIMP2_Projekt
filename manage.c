@@ -37,6 +37,7 @@ int checkFileType(const char *filePath) {
 }
 
 
+// Funkcja parsująca argumenty
 Arguments parseArguments(int argc, char* argv[]) {
     Arguments args = { .fileName = "maze.txt", .algorithm = "dfs" }; // Domyślne wartości
 

@@ -198,21 +198,22 @@ int runDFS(FILE* maze,MazeDim dims) {
         }
     }
 
-    //Zwalniam pamięć
+    //Zwalnianie pamięci
     freeMiniInt(pathLens);
     freeInt(nodes);
     
     int movesCount = printMoves(allMoves, OUT);
     movesCount++;
     printf("Znaleziono sciezke od dlugosci: %d\n", movesCount);
-    // updateBinaryFileWithSolution(binaryFilePath, movesCount);
     
     //Wypełniam P i K aby można było wyczyścić dawną ścieżkę
     writeCell(maze, dims.start, dims.columns, 'P');
     writeCell(maze, dims.end, dims.columns, 'K');
     // Usuwam z pliku ścieżkę
     restoreFile(maze, '*');
-    
+
+
+    // Tworzenie pliku z labiryntem z odnalezioną ścieżką    
     FILE * mazeWithPath = fopen("output/labiryntZeSciezka.txt", "w+");
     copyFile(maze, mazeWithPath);
     addPathToFile(allMoves, mazeWithPath, dims.columns, dims.start);
