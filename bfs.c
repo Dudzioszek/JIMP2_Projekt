@@ -93,7 +93,6 @@ int runBFS(FILE* maze,MazeDim dims) {
     //kiedy program odwiedzi komórkę to zmienia ją z ' ' na '-'
     //writeCell(maze, currCell, cols, '-');
     writeCell(maze, dims.start, dims.columns, '-');
-    //Usuwam tymczasowo K z mapy aby algorytm traktował je jako przestrzeń
     writeCell(maze, dims.end, dims.columns, ' ');
 
     printf("Rozpoczynam algorytm BFS...\n");

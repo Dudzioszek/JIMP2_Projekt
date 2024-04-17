@@ -79,7 +79,7 @@ int printMoves(CharStack* stack, const char* filename) {
             fprintf(file, "%s\n", getTurnDirection(previousDirection, getMove(stack, i))); // Wypisz skręt
 
             previousDirection = getMove(stack, i);
-            streak = 1; // Resetuj licznik ruchów w nowym kierunku
+            streak = 1; // Resetuj licznik po zmianie kierunku ruchu
         }
     }
 
@@ -87,7 +87,7 @@ int printMoves(CharStack* stack, const char* filename) {
     fprintf(file, "FORWARD %d\n", streak);
     fprintf(file, "STOP\n"); // Zakończ sekwencję
     fclose(file);
-    return l_ruch; // Zwróć 0, aby sygnalizować, że funkcja zakończyła się sukcesem
+    return l_ruch; // Zwraca liczbę ruchów
 }
 
 void addPathToFile(CharStack* stack, FILE* output, int col, int start) {
