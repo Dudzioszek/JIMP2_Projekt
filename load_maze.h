@@ -21,11 +21,8 @@ typedef struct {
 extern MazeDim dims;
 
 
-void initMazeDimensions(MazeDim *dims);
 MazeDim analyzeMazeAndFindPositions(FILE *file);
 
-
-void checkSize(FILE*, int*, int*);
 void getData(FILE*, int, int*, int*);
 
 char readCell(FILE*, int , int);
@@ -33,5 +30,4 @@ void writeCell(FILE*, int , int , char );
 void copyFile(FILE *, FILE *);
 void restoreFile(FILE*, char);
 
-void checkSizeAndGetData(FILE *file, int *rows, int *cols, int *start, int *end);
 #endif

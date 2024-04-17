@@ -61,7 +61,8 @@ int main(int argc, char *argv[]) {
         perror("Błąd przy otwieraniu pliku");
         return -1;
     }
-    int moves_count = 0;
+    int moves_count = 0; // liczenie ruchów
+    
     // Sprawdzanie jaki algorytm ma być użyty
     if (strcmp(args.algorithm, "dfs") == 0) {
         printf("Wybrano algorytm DFS\n");

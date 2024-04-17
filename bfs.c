@@ -81,7 +81,6 @@ int runBFS(FILE* maze,MazeDim dims) {
 
 
     //pobieram z pliku rozmiar labiryntu
-
     int mazeSize = dims.rows*dims.columns;
 
 
