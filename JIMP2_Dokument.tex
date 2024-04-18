@@ -1,0 +1,220 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[polish]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lipsum} % Pakiet do generowania tekstu 'Lorem ipsum'
+\usepackage{geometry}
+
+\title{JIMP2 Sprawozdanie z projektu w języku C}
+\author{Stanisław Dutkiewicz, Filip Kobus}
+\date{Kwiecień 2024}
+
+\geometry{
+  top=3.7cm, % Górny margines
+  bottom=3.7cm, % Dolny margines
+  left=4.7cm, % Lewy margines
+  right=4.7cm, % Prawy margines
+}
+
+\begin{document}
+\maketitle
+
+\newpage
+\tableofcontents
+
+\newpage
+
+\section{Wstęp}
+Celem projektu jest stworzenie programu umożliwiającego znalezienie rozwiązania do wczytanego przez użytkownika labiryntu. Labirynt może być udostępniony zarówno w postaci pliku tekstowego jak i binarnego.
+
+\subsection{Problem Zadania}
+
+Głównym wyzwaniem projektu jest opracowanie efektywnego algorytmu, który umożliwi znalezienie w labiryncie ścieżki prowadzącej od punktu P do K. Maksymalny rozmiar labiryntu, jaki może być przekazany do rozwiązania, to 1024 × 1024 liczony po ścieżkach, po których można się poruszać, co stawia przed nami zadanie efektywnego zarządzania pamięcią i optymalizacji algorytmu pod kątem czasu wykonania i zużycia zasobów.
+
+Ważnym wymaganiem, dla części projektu realizowanej w języku C, jest ograniczenie dotyczące zużycia pamięci. Program w języku C nie powinien zużywać więcej niż 512 kB pamięci w trakcie całego swojego działania. To wymaganie podkreśla konieczność nie tylko implementacji skutecznego algorytmu przeszukiwania, ale również wydajnego zarządzania pamięcią oraz optymalnego projektowania struktur danych używanych w programie. Wyzwanie to wymaga głębokiego zrozumienia zarówno algorytmów, jak i niższopoziomowych aspektów zarządzania zasobami w programowaniu, co stanowi istotny element edukacyjny projektu.
+
+Dodatkowo, program musi posiadać funkcjonalność wczytywania i zapisywania labiryntu w postaci pliku binarnego. 
+
+\subsection{Sposób rozwiązania}
+
+Do rozwiązania tego problemu wykorzystane zostaną dwie metody przeszukiwania: BFS (Breadth-First Search) oraz DFS (Depth-First Search), z których użytkownik może wybrać jeden. Algorytmy te posłużą do eksploracji labiryntu w celu znalezienia rozwiązania.
+
+
+\vspace{1mm}
+
+\item \textbf{DFS} jest to algorytm, który eksploruje labirynt, poruszając się zgodnie z ustalonymi wcześniej priorytetami ruchów (omijając przy tym ściany), a gdy napotka ślepy zaułek, cofa się do ostatnio napotkanego węzła, aby spróbować innej ścieżki. Aby algorytm nie przekroczył zakładanego limitu pamięci, droga do każdego z tych zaułków będzie sukcesywnie usuwana z programu, co ograniczy wykorzystanie pamięci. Dodatkowo zostanie zaimplementowany w postaci iteracyjnej, mającej przewagę nad postacią rekurencyjną przez znacznie niższe zużycie zasobów. Poniżej przedstawiono przykładowe działanie algorytmu DFS.
+
+\newgeometry{top=1.4cm, bottom=4.7cm, left=1cm, right=1.4cm}
+\centering
+\includegraphics[width=\linewidth]{algorytm1.png}
+\caption{Rys.1 Skrótowa ilustracja działania algorytmu DFS}
+\restoregeometry
+
+\newgeometry{top=1.4cm, bottom=4.7cm, left=1cm, right=1.4cm}
+\includegraphics[width=\linewidth]{algorytm2.png}
+\caption{Rys.2 Skrótowa ilustracja działania algorytmu DFS cd.}
+\restoregeometry
+
+\newgeometry{top=1.4cm, bottom=4.7cm, left=1.4cm, right=1.4cm}
+Poniżej przedstawiono przykładowe działanie algorytmu DFS.
+\includegraphics[width=\linewidth]{algorytm3.png}
+\caption{Rys.3 Skrótowa ilustracja działania algorytmu BFS}
+\restoregeometry
+
+\flushleft
+
+\item \textbf{BFS} algorytm polega na przeszukiwaniu labiryntu wszerz, zapisując na stworzonej wcześniej kolejce możliwe do przejścia komórki, a następnie sukcesywnie odwiedzając każdą z nich co tym samym pozwoli na znalezienie najkrótsze drogi do wyjścia. Jego przewagą na algorytmem DFS jest pewność znalezienia najkrótszej ścieżki, co w DFS zależy od ustawień początkowych oraz konfiguracji ścian labiryntu. Aby zaoszczędzić pamięć, kolejka jest tworzona w pliku tekstowym, przez co nie korzysta z zasobów pamięciowych programu.
+
+\vspace{5mm}
+
+Implementacja tych algorytmów w języku C, którą opracowaliśmy, wymagała szczególnej uwagi na efektywne zarządzanie pamięcią, zwłaszcza w kontekście ograniczenia do 512 kB pamięci dostępnej podczas działania programu. Aby sprostać temu wyzwaniu, kluczowe okazało się nie tylko zaprojektowanie samych algorytmów, ale również efektywne przechowywanie struktur danych, takich jak stosy, które służą do zapamiętywania odwiedzonych komórek i ścieżek w labiryncie.
+
+\vspace{5mm}
+
+Szczególnie istotnym elementem naszej strategii optymalizacji pamięci było zaimplementowanie stosu \texttt{char\_stack}, który wykorzystuje utworzony podczas wywołaia programu plik tymczasowy który służy do zapisywania drogi pokonanej podczas przechodzenia labiryntu. Dzięki temu rozwiązaniu, zamiast obciążać pamięć operacyjną, stan algorytmu DFS jest przechowywany na dysku. To podejście znacząco zmniejsza zużycie pamięci języka C, pozwalając na dynamiczne zarządzanie zasobami i utrzymanie całkowitego zużycia pamięci znacznie poniżej ustalonego limitu 512 kB. Realizacja tej metody stanowi kluczowy czynnik umożliwiający efektywną pracę programu przy zachowaniu ograniczeń sprzętowych, nie wpływający przy tym na czas wykonywania programu.
+
+\subsection{Rodzaje plików wejściowych}
+
+\item \textbf{Plik tekstowy}: Zawiera symbole reprezentujące elementy labiryntu tj. wejście do labiryntu (P), wyjście z labiryntu (K), ściany (X) oraz miejsca, po których można się poruszać (spacja).
+
+\item \textbf{Plik binarny}: Składa się z nagłówka pliku, informującego o: rozmiarach labiryntu, współrzędnych wejścia i wyjścia oraz binarnych reprezentacjach elementów labiryntu (takich samych jak te w wersji tekstowej). Następnie zamiesczono w niej sam labirynt w postaci przypominającej wersję tekstową z niewielką różnicą tzn. przed informacją o rodzaju komórki (ściana lub wolna przestrzeń), umieszczona została liczba jego wystąpień w danym miejscu co pozwoliło na znacznego ograniczenie rozmiarów pliku wejściowego. Ostatnim elementem pliku jest sekcja rozwiązania gdzie autor labiryntu może zamieścić rozwiązanie do labiryntu, choć nie jest to wymagane.
+
+
+\section{Implementacja}
+
+
+Implementacja projektu, realizowanego w języku C, skupiła się na rozwiązaniu problemu nawigacji przez labirynt z użyciem algorytmu przeszukiwania w głąb (DFS) oraz w szerz (BFS), przy jednoczesnym ograniczeniu zużycia pamięci. Kluczową decyzją projektową była modularna architektura systemu, która ułatwiła zarządzanie kodem oraz optymalizację pamięci. Szczególną uwagę poświęcono efektywnemu zarządzaniu danymi, w tym zastosowaniu stosu znaków, który zapisuje postęp w pliku tymczasowym, minimalizując w ten sposób konsumpcję pamięci programu. Poniżej są przedstawione kluczowe moduły projektu, które razem tworzą spójny system zdolny do skutecznego rozwiązywania labiryntów.
+
+
+\subsection{Moduły}
+
+Projekt składa się z kilku kluczowych modułów, które współpracują ze sobą w celu rozwiązania problemu nawigacji przez labirynt:
+
+\begin{itemize}   
+    \item \textbf{Wczytywanie labiryntu (\texttt{load\_maze.h}, \texttt{load\_maze.c})}: Ten moduł jest odpowiedzialny za inicjalizację labiryntu poprzez odczyt z pliku tekstowego.
+    Funkcje zawarte w tym module pozwalają na określenie wymiarów labiryntu oraz identyfikację lokalizacji punktów startowego i końcowego. Te dane są zapisywanie w specjalnej strukturze, która jest używana bardzo często. Jest to krytyczny pierwszy krok w procesie rozwiązywania labiryntu, ponieważ dostarcza struktury danych niezbędnej do nawigacji.
+
+    \item \textbf{Wczytywanie labiryntu z pliku binarnego (\texttt{binary.h}, \texttt{binary.c})}: Moduł ten jest wykorzystywany w przypadku kiedy dane labiryntu zostaną wprowadzone w postaci pliku binarnego. Funkcje które implementuje to:
+        
+        \begin{itemize}
+          \item Odczytywanie pliku binarnego
+          \item Przetwarzanie labiryntu z formy binarnej na tekstową
+          \item Wypisanie labiryntu wraz z rozwiązaniem w formie pliku binarnego
+        \end{itemize}
+
+    \item \textbf{Zarządzanie argumentami (\texttt{manage.h}, \texttt{manage.c})}: Ten moduł odpowiada za zarządzanie argumentami wprowadzanymi przez użytkownika - korzystając z funkcji getopt przyporządkowuje wprowadzonem akronimowi funkcjonalność algorytmu.
+
+    \item \textbf{Algorytmy (\texttt{dfs.h}, \texttt{dfs.c} oraz \texttt{bfs.h}, \texttt{bfs.c})}:
+    Zawierają serce logiki nawigacyjnej programu, wykorzystując poniżej wspomniane moduły. Pierwszy z nich - DFS ustala priorytety kierunków ruchu na podstawie aktualnej pozycji i kierunku docelowego. Dodatkowo zawiera funkcję move, która dla podanej komórki,  sprawdza jakie są dostępne ruchy, zwraca ich ilość oraz wybiera z pośród dostępnych możliwości, kolejny ruch, wraz ze współrzędnymi następnej komórki. Drugi algorytm - BFS, również składa się z funkcji moveb, która analizuje sąsiednie komórki danej komórki i zapisuje w kolejce wszystkie dostępne możliwości. W tym algorytmie kierunki ruchów są ustawione domyślnie, ponieważ nie ma to wpływu na działanie algorytmu i znajdowanie ścieżki. Aby odczytać finalne rozwiązanie, do każdego z węzłów wpisywany jest kierunek przeciwny do kierunku wejścia np. jeżeli węzeł został odwiedzony od północy do wpisujemy do niego S (South - z ang. południe).
+
+    
+    \item \textbf{Stos znaków (\texttt{char\_stack.h}, \texttt{char\_stack.c})}: Moduł ze stosem znaków odgrywa kluczową rolę w śledzeniu i zarządzaniu sekwencjami ruchów w labiryncie. W odróżnieniu od tradycyjnych implementacji, stos ten wykorzystuje plik tymczasowy na dysku do zapisywania postępu, co pozwala na znaczne ograniczenie zużycia pamięci operacyjnej. Każdy ruch w labiryncie, reprezentowany przez charakterystyczny znak ('N', 'S', 'E', 'W'), jest zapisywany bezpośrednio w tym pliku, dzięki czemu można dynamicznie zarządzać historią eksploracji bez obawy o przekroczenie dostępnego limitu pamięci 512 kB. Jest on wykorzystywany w algorytmie DFS.
+
+
+    \item \textbf{Stos liczb całkowitych (\texttt{int\_stack.h}, \texttt{int\_stack.c})}:
+    Ten moduł implementuje stos, dla liczb całkowitych (typ `int`). Jest on używany do przechowywania współrzędnych napotkanych podczas przechodzenia labiryntu węzłów, które jak wynika z wymagań zadania, nie mogą być większe niż 4mln., co mieści się w zakresie zmiennej typu int. Stos operuje na tablicy dynamicznej, która podczas zbliżania się do swojego maksymalnego rozmiaru zwiększa swoją pojemność dwukrotnie. Jest on wykorzystywany w algorytmie DFS.
+
+
+    \item \textbf{Kolejka liczb całkowitych(\texttt{queue.h}, \texttt{queue.c})}:
+    Ten moduł implementuje kolejkę dla liczb całkowitych (typ `int`), która wykorzystuje plik tekstowy do przechowywania danych. Kolejka jest używana do przechowywania współrzędnych napotkanych podczas przechodzenia labiryntu węzłów, zgodnie z wymaganiami zadania. W przypadku, gdy liczba współrzędnych przekracza rozmiar pamięci RAM, wykorzystanie pliku tekstowego pozwala na elastyczne zarządzanie danymi. Kolejka umożliwia operacje dodawania elementów na koniec kolejki oraz usuwania elementu z początku kolejki.
+    
+    
+\end{itemize}
+
+    
+
+\subsection{Funkcjonalność}
+
+Program oferuje następujące funkcjonalności:
+
+\begin{itemize}
+    \item \textbf{Dynamiczne wczytywanie labiryntów}: Możliwość wczytania dowolnego labiryntu zarówno z pliku tekstowego jak i binarnego, z automatycznym rozpoznaniem rozmiaru oraz lokalizacji startu i mety.
+    \item \textbf{Wybór algorytmu}: Możliwość wybrania algorytmu rozwiązującego labirynt (DFS lub BFS).
+    \item \textbf{Efektywne znajdowanie ścieżki}: Użycie algorytmu przeszukiwania w głąb (DFS), aby znaleźć drogę przez labirynt, z minimalnym zużyciem pamięci.
+    \item \textbf{Efektowne znajdowanie ścieżki}: Użycie algorytmu przeszukiwania w szerz (BFS), aby znaleźć najkrótszą drogę przez labirynt.
+    \item \textbf{Ręczne ustalanie priorytetu}: W algorytmie DFS istniej możliwość ustalenia priorytetu współrzędnej horyzontalnej lub wertykalnej który będzie istotny podczas tworzenia kolejności wyboru ruchów. Jest to dostępne na samej górze pliku \texttt{dfs.h}
+    \item \textbf{Eksport wyników}: Możliwość zapisania wykonanych przez algorytm kroków do pliku (kroki.txt), co ułatwia analizę i prezentację rozwiązania. Również zapisywany jest plik binarnego z labiryntem oraz jego rozwiązaniem.
+    \item \textbf{Widowiskowy sposób zapisu wyniku}: Wynik działania algorytmu, oprócz postaci kolejno zapisanych instrukcji, jest zapisywany również jako plik tekstowy zawierający labirynt wejściowy wraz z naniesioną na niego ścieżką, co umożliwia szybkie sprawdzenie rezultatu wywołania programu.
+\end{itemize}
+
+\subsection{Uruchamianie programu}
+
+Aby uruchomić program, użytkownik musi umieścić w folderze \texttt{\\source}, plik zawierający labirnyt (w rozszerzeniu .txt lub .bin) lub skorzystać z domyślnego pliku maze.txt umieszczonego w katalogu głównym programu. Struktura labiryntu w pliku tekstowym, powinna wykorzystywać następujące oznaczenia:
+
+\begin{itemize}
+    \item \textbf{P} - punkt wejścia do labiryntu,
+    \item \textbf{K} - punkt wyjścia z labiryntu,
+    \item \textbf{X} - ściana,
+    \item \textbf{spacja} - wolne miejsce, po którym można się poruszać.
+\end{itemize}
+
+Program można uruchomić wykonując następujące kroki:
+
+\begin{enumerate}
+    \item Otwórz terminal w systemie Linux.
+    \item Przejdź do katalogu zawierającego pliki programu za pomocą polecenia \texttt{cd ścieżka/do/katalogu}.
+    \item Umieść plik z labiryntem w katalogu \texttt{\\source}.
+    \item Skompiluj program używając kompilatora make: \texttt{make all}.
+    \item Uruchom program poleceniem: \texttt{./app}.
+    \item Wczytaj swój labirynt: \texttt{./app -n "plik.txt"} lub \texttt{./app -n "plik.bin"}.
+    \item Wybierz algorytm: \texttt{./app -a dfs} lub \texttt{./app -a bfs}.
+    \item Uzyskaj pomoc: \texttt{./app -h}.
+\end{enumerate}
+
+\textbf{Uwaga:} Dla poprawnego działania programu, wprowadzony plik wejściowy musi być obecny w katalogu \texttt{source} i zawierać prawidłowo sformatowany labirynt. W przypadku braku pliku lub błędów w jego formacie, program zakończy działanie z odpowiednim komunikatem błędu. Program można wywołać również bez argumentów, wtedy zostanie wczytana domyślna plansza maze.txt, a labirynt rozwiąże algorytm dfs.
+
+Upewnij się, że środowisko uruchomieniowe spełnia wszystkie wymagania niezbędne do kompilacji i wykonania programu, w tym posiadanie zainstalowanego kompilatora cc i standardowych bibliotek języka C.
+
+
+\subsection{Sposób działania algorytmów }
+
+Program rozpoczyna od wybrania algorytmu (BFS lub DFS), wczytania labiryntu za pomocą modułu \texttt{load\_maze}, a następnie inicjalizacji struktury danych do przechowywania informacji o ruchach. Kolejnym krokiem jest ustalenie priotytetów ruchów na podstawie współrzędnych wejścia oraz wyjścia z labiryntu. Następnie dany algorytm, przy pomocy funkcji firstMove podejmuje pierwszy krok, tak aby nie wyjść poza sciany labiryntu, a w dalszej kolejności tą rolę przejmuje funkcja move, wykonywana w pętli \texttt{while}, tak długo, aż obecna komórka będzie różna od komórki mety. Podczas eksploracji, każdy wykonany ruch jest oznaczany symbolem: '-', jako miejsce do których algorytm nie powróci. Dodatkowo algorytm BFS oznacza każdy z odwiedzonych węzłów kierunkiem wejścia do tego węzła. Po znalezieniu ścieżki, wykonane ruchy są eksportowane do pliku (output/kroki.txt), tworzony jest plik labiryntZeSciezka w folderze output, który zawiera labirynt z zaznaczoną symbolem '*' drogą do wyjścia, a program zamyka otwarte zasoby, czyści planszę wejściową z zaznaczonych ruchów i kończy działanie.
+
+
+Dzięki modularnej strukturze, projekt ten jest łatwo rozszerzalny i umożliwia dodawanie nowych funkcji, takich jak graficzny interfejs użytkownika czy zaawansowane algorytmy przeszukiwania.
+
+\section{Testy}
+
+Podczas oceny wydajności naszego rozwiązania skupiliśmy się na testowaniu czterech labiryntów o różnych rozmiarach: 10x10, 100x100, 512x512 oraz 1024x1024. Dla każdego z tych labiryntów przeprowadziliśmy testy mające na celu zmierzenie zużycia pamięci oraz czasu potrzebnego na znalezienie rozwiązania. Testy przeprowadzone zostały w środowisu Linux Ubuntu, wersji 18.03, stosując odpowiednio moduł time do mierzenia czasu oraz program Valgrind pozwalający na zmierzenie maksymalnego zużycia pamięciowego. Poniżej przedstawiamy wyniki tych testów. Testy dotyczą jedynie algorytmu DFS.
+
+\subsection{Labirynt 10x10}
+
+\textbf{Zużycie pamięci: 14,859 B}
+
+\textbf{Czas trwania: ok. 0.009 s}
+
+\subsection{Labirynt 100x100}
+
+\textbf{Zużycie pamięci:16,839 B}
+
+\textbf{Czas trwania: ok. 0.06 s}
+
+\subsection{Labirynt 512x512}
+
+\textbf{Zużycie pamięci: 31,103 B}
+
+\textbf{Czas trwania: ok. 4.1 s}
+
+\subsection{Labirynt 1024x1024}
+
+\textbf{Zużycie pamięci:47,488 B}
+
+\textbf{Czas trwania: ok. 7.1-15.4 s}
+
+\vspace{5mm}
+
+Wnioski z tych testów będą miały kluczowe znaczenie dla dalszego rozwoju naszego projektu. Pozwalają one na zrozumienie, jak skala labiryntu wpływa na wydajność algorytmu i efektywność zarządzania pamięcią. Wyniki testów mogą również wskazywać potencjalne obszary do optymalizacji, aby jeszcze bardziej poprawić wydajność naszego rozwiązania w przyszłości.
+
+
+\section{Wnioski}
+
+Realizacja tego projektu na początku semestru stanowiła dla nas doskonałą okazję do odświeżenia i pogłębienia umiejętności programowania w języku C.
+\vspace{5mm}
+
+Jednym z największych wyzwań, przed którymi stanęliśmy, było efektywne zarządzanie pamięcią. W miarę rozwoju projektu zdecydowaliśmy się na znaczącą optymalizację struktury danych, przede wszystkim poprzez przejście z listy połączonej na dynamiczne tablice. Spowodowało to znaczący spadek zajmowanej pamięci, mieszącej się w zaplanowanym limicie, jednak dopiero transformacja modułu \texttt{char\_stack.c} okazała się satysfakcjonująca - zamiast stosować tradycyjne struktury stosu, opracowaliśmy mechanizm wykorzystujący plik tymczasowy do zapisywania sekwencji ruchów. Dzięki temu znacznie zredukowaliśmy zużycie pamięci operacyjnej, co pozwoliło nam na znaczące obniżenie używanych zasobów i tym samym, spełnienie wymagań projektowych dotyczących ograniczeń pamięciowych.
+
+\vspace{5mm}
+
+Najbardziej wymagającym zadaniem, przed którym stanęliśmy, było zapisanie labiryntu wraz z wynikiem w pliku binarnym. Choć zastosowaliśmy najlepsze znane nam techniki i algorytmy, ciągle pozostaje pewna niepewność co do optymalności i poprawności tej części projektu. To doświadczenie uświadomiło nam, że nawet po skutecznej implementacji innych modułów, całościowe zrozumienie i prawidłowa realizacja zapisu danych w formacie binarnym może stanowić wyzwanie i wymagać dalszego doskonalenia naszych umiejętności programistycznych.
+
+\end{document}
