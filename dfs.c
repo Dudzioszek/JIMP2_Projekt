@@ -131,10 +131,9 @@ int runDFS(FILE* maze,MazeDim dims) {
     //zawiera priorytet kierunków, np: ESWN - prawo-dół-lewo-góra
     char directions[5];
 
-
-
     FILE *stack = fopen("tempC.txt", "w+");
     FILE *stackInt = fopen("tempInt.txt", "w+");
+    FILE *stackShort = fopen("tempShort.txt", "w+");
 
     //komórka którą algorytm wybierze jako następną
     int nextCell;
@@ -145,7 +144,7 @@ int runDFS(FILE* maze,MazeDim dims) {
     // inicjalizuje stosy
     CharStack *allMoves = createCharStack(stack);
     IntStack *nodes = initInt(stackInt);
-    MiniIntStack *pathLens = initMiniInt();
+    MiniIntStack *pathLens = initMiniInt(stackShort);
     
 
     int mazeSize = dims.rows*dims.columns;
@@ -187,7 +186,6 @@ int runDFS(FILE* maze,MazeDim dims) {
                 break;
             default:
                 pushInt(nodes, currCell);
-                printf("%d\n", currCell);
                 pushMiniInt(pathLens, currPathLen);
                 currPathLen = 1;
                 currCell = nextCell;
@@ -204,26 +202,23 @@ int runDFS(FILE* maze,MazeDim dims) {
     int movesCount = printMoves(allMoves, OUT);
     movesCount++;
     printf("Znaleziono sciezke od dlugosci: %d\n", movesCount);
-    
-    //Wypełniam P i K aby można było wyczyścić dawną ścieżkę
+
+    // Usuwam z pliku ścieżkę
+    restoreFile(maze);
     writeCell(maze, dims.start, dims.columns, 'P');
     writeCell(maze, dims.end, dims.columns, 'K');
-    // Usuwam z pliku ścieżkę
-    restoreFile(maze, '*');
 
 
     // Tworzenie pliku z labiryntem z odnalezioną ścieżką    
-    FILE * mazeWithPath = fopen("output/labiryntZeSciezka.txt", "w+");
-    copyFile(maze, mazeWithPath);
-    addPathToFile(allMoves, mazeWithPath, dims.columns, dims.start);
-    writeCell(mazeWithPath, dims.start, dims.columns, 'P');
-    writeCell(mazeWithPath, dims.end, dims.columns, 'K');
 
     deleteCharStack(allMoves);
     fclose(maze);
-    fclose(mazeWithPath);
-    fclose(stack);
     fclose(stackInt);
+    fclose(stackShort);
+
+    remove("tempC.txt");
+    remove("tempInt.txt");
+    remove("tempShort.txt");
     
     return movesCount;
 

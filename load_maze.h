@@ -28,6 +28,6 @@ void getData(FILE*, int, int*, int*);
 char readCell(FILE*, int , int);
 void writeCell(FILE*, int , int , char );
 void copyFile(FILE *, FILE *);
-void restoreFile(FILE*, char);
+void restoreFile(FILE*);
 
 #endif

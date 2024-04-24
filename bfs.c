@@ -116,21 +116,14 @@ int runBFS(FILE* maze,MazeDim dims) {
     translateSteps("output/krokiTemp.txt",  OUT, counter);
     printf("Znaleziono sciezke od dlugosci: %d\n", counter);
     //Usuwam znaki wypisane przez algorytm
-    restoreFile(maze, '*');
-    FILE* outWithPath = fopen(OUTPATHFILE, "w+");
-    copyFile(maze, outWithPath);
-    restoreFile(maze, '-');
-    //Wypełniam P i K w maze
+    restoreFile(maze);
     writeCell(maze, dims.start, dims.columns, 'P');
     writeCell(maze, dims.end, dims.columns, 'K');
-    //Wypełniam P i K w outWithPath
-    writeCell(outWithPath, dims.start, dims.columns, 'P');
-    writeCell(outWithPath, dims.end, dims.columns, 'K');
-    //Usuwam z pliku ścieżkę
+    //Wypełniam P i K w maze
     fclose(maze);
     fclose(temp);
-    fclose(outWithPath);
     remove("output/krokiTemp.txt");
+    remove("temp.txt");
 
 
     return counter;

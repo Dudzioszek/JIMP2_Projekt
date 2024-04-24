@@ -16,27 +16,20 @@ IntStack* initInt(FILE *file) {
 
 // Dodawanie elementu do stosu
 void pushInt(IntStack* stack, int value) {
-    if (stack == NULL) {
-        fprintf(stderr, "Błąd: Stos niezainicjalizowany.\n");
-        exit(EXIT_FAILURE);
-    }
-    fseek(stack->file, 0, SEEK_END);
+    fseek(stack->file, stack->index, SEEK_SET);
     fprintf(stack->file, "%7d\n", value);
+    stack->index += 8;
 }
 
 // Usuwanie elementu ze stosu
 int removeInt(IntStack* stack) {
-    if (stack == NULL) {
-        fprintf(stderr, "Błąd: Stos niezainicjalizowany.\n");
-        exit(EXIT_FAILURE);
-    }
+    stack->index -= 8;
     fseek(stack->file, stack->index, SEEK_SET);
     int data;
     if (fscanf(stack->file, "%d", &data) != 1) {
         fprintf(stderr, "Błąd odczytu danych ze stosu.\n");
         exit(EXIT_FAILURE);
     }
-    stack->index = ftell(stack->file);
     return data;
 }
 

@@ -1,9 +1,8 @@
 #include <stdbool.h>
 
 typedef struct {
-    short *array; // tablica przechowująca elementy stosu
-    int top; // wielkość stosu
-    int max_size; // maksymalna wielkość stosu
+    FILE *file; // tablica przechowująca elementy stosu
+    int index; // wielkość stosu
 } MiniIntStack;
 
 // Prototypy funkcji dla mini stosu

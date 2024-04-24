@@ -74,7 +74,5 @@ int main(int argc, char *argv[]) {
     writeMazeToBinary(textFilePath, binFilePath, moves_count, dims);
 
 
-    remove("temp.txt");
-
     return 0;
 }
