@@ -7,6 +7,19 @@
 #define OUT OUT_DIR "kroki.txt"
 #define OUTPATHFILE "output/labiryntZeSciezka.txt"
 
+
+
+void restoreFile(FILE *file, char additionalChar) {
+    rewind(file);
+    char znak;
+    while ((znak = fgetc(file)) != EOF) {
+        if (znak != 'X' && znak != 'P' && znak != 'K' && znak != '\n' && znak != additionalChar) {
+            fseek(file, -1, SEEK_CUR); // Przesuwa wskaźnik pliku o jeden bajt wstecz
+            fputc(' ', file); // Zapisuje pusty znak w miejscu wystąpienia '-'
+        }
+    }
+}
+
 //funkcja wykonująca pierwszy ruch
 char firstMoveb(FILE *file, int *cell, int cols, int size) {
 
@@ -69,7 +82,7 @@ char moveb(FILE *file, Queue *queue, int *routesPossible, int cell, int col) {
 }
 
 
-int runBFS(FILE* maze,MazeDim dims) {
+int runBFS(FILE* maze,MazeDim dims, Arguments args) {
 
     
 
@@ -115,6 +128,17 @@ int runBFS(FILE* maze,MazeDim dims) {
     int counter = printMovesq(maze, "output/krokiTemp.txt", dims.start, dims.end, dims.columns);
     translateSteps("output/krokiTemp.txt",  OUT, counter);
     printf("Znaleziono sciezke od dlugosci: %d\n", counter);
+
+    if(args.save_way){ // jeśli użytkownik chce zapisać labirynt z wyznaczoną ścieżką
+        
+        restoreFile(maze, '*');
+        FILE* outWithPath = fopen(OUTPATHFILE, "w+");
+        copyFile(maze, outWithPath);
+        fclose(outWithPath);
+        restoreFile(maze, '-');
+    }
+
+
     //Usuwam znaki wypisane przez algorytm
     restoreFileBFS(maze);
     writeCell(maze, dims.start, dims.columns, 'P');

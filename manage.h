@@ -2,10 +2,14 @@
 #include <stdbool.h>
 #include <unistd.h>
 
+#ifndef MANAGE_H
+#define MANAGE_H
+
 
 typedef struct {
     char* fileName;
     char* algorithm;
+    bool save_way;
 } Arguments;
 
 // Funkcja sprawdzająca czy plik istnieje
@@ -14,3 +18,5 @@ int checkFileType(const char *filePath);
 
 
 Arguments parseArguments(int argc, char* argv[]);
+
+#endif

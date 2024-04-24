@@ -39,10 +39,10 @@ int checkFileType(const char *filePath) {
 
 // Funkcja parsująca argumenty
 Arguments parseArguments(int argc, char* argv[]) {
-    Arguments args = { .fileName = "maze.txt", .algorithm = "dfs" }; // Domyślne wartości
+    Arguments args = { .fileName = "maze.txt", .algorithm = "dfs", .save_way = false }; // Domyślne wartości
 
     int opt;
-    while ((opt = getopt(argc, argv, "n:a:p")) != -1) {
+    while ((opt = getopt(argc, argv, "n:a:p:w")) != -1) {
         switch (opt) {
             case 'n':
                 {
@@ -74,6 +74,10 @@ Arguments parseArguments(int argc, char* argv[]) {
                 printf("  -n <nazwa_pliku>    Określ nazwę pliku z labiryntem, musi być w folderze 'source' (domyślnie: maze.txt)\n");
                 printf("  -a <algorytm>       Wybierz algorytm do rozwiązania labiryntu (dfs lub bfs, domyślnie: dfs)\n");
                 exit(EXIT_SUCCESS);
+
+            case 'w':
+                args.save_way = true;
+                break;
             
             default:
                 printf("\nWpisz -p żeby otrzymać pomoc.\n\n");

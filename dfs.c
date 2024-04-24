@@ -123,7 +123,7 @@ char move(FILE *file, char *directions, int *new_cell, int cell, int *count, int
     return move;
 }
 
-int runDFS(FILE* maze,MazeDim dims) {
+int runDFS(FILE* maze,MazeDim dims, Arguments args) {
 
         
     // przechowuje dlugosc drogi od węzła do węzła
@@ -209,7 +209,15 @@ int runDFS(FILE* maze,MazeDim dims) {
     writeCell(maze, dims.end, dims.columns, 'K');
 
 
-    // Tworzenie pliku z labiryntem z odnalezioną ścieżką    
+    
+    if (args.save_way){ // jeśli użytkownik chce zapisać labirynt z wyznaczoną ścieżką
+        FILE * mazeWithPath = fopen("output/labiryntZeSciezka.txt", "w+");
+        copyFile(maze, mazeWithPath);
+        addPathToFile(allMoves, mazeWithPath, dims.columns, dims.start);
+        writeCell(mazeWithPath, dims.start, dims.columns, 'P');
+        writeCell(mazeWithPath, dims.end, dims.columns, 'K');
+        fclose(mazeWithPath);
+    }    
 
     deleteCharStack(allMoves);
     fclose(maze);

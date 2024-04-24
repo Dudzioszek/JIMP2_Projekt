@@ -66,9 +66,9 @@ int main(int argc, char *argv[]) {
     // Sprawdzanie jaki algorytm ma być użyty
     if (strcmp(args.algorithm, "dfs") == 0) {
         printf("Wybrano algorytm DFS\n");
-        moves_count = runDFS(maze, dims);
+        moves_count = runDFS(maze, dims, args);
     } else if (strcmp(args.algorithm, "bfs") == 0) {
-        moves_count = runBFS(maze,dims);
+        moves_count = runBFS(maze,dims,args);
     } 
 
     writeMazeToBinary(textFilePath, binFilePath, moves_count, dims);
