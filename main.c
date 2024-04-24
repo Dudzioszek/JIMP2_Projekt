@@ -18,6 +18,8 @@ int main() {
     char directions[5];
     FILE *maze = fopen(IN, "r+");
     FILE *stack = fopen("temp.txt", "w+");
+    FILE *stackInt = fopen("tempInt.txt", "w+");
+    FILE *stackShort = fopen("tempShort.txt", "w+");
 
     //komórka którą algorytm wybierze jako następną
     int nextCell;
@@ -26,8 +28,8 @@ int main() {
 
     //inicjalizuje stosy
     CharStack *allMoves = createCharStack(stack);
-    IntStack *nodes = initInt();
-    MiniIntStack *pathLens = initMiniInt();
+    IntStack *nodes = initInt(stackInt);
+    MiniIntStack *pathLens = initMiniInt(stackShort);
 
     //pobieram z pliku rozmiar labiryntu
     checkSizeAndGetData(maze, &rows, &cols, &start, &end);
@@ -114,7 +116,12 @@ int main() {
     restoreFile(maze);
     fclose(maze);
     fclose(stack);
+
+    fclose(stackInt);
+    fclose(stackShort);
     remove("temp.txt");
+    remove("tempInt.txt");
+    remove("tempShort.txt");
 
     return 0;
 }

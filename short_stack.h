@@ -1,13 +1,12 @@
 #include <stdbool.h>
 
 typedef struct {
-    short *array; // tablica przechowująca elementy stosu
-    int top; // wielkość stosu
-    int max_size; // maksymalna wielkość stosu
+    int index; // wielkość stosu
+    FILE *file;
 } MiniIntStack;
 
 // Prototypy funkcji dla mini stosu
-MiniIntStack* initMiniInt(); // Inicjalizuje nowy stos
+MiniIntStack* initMiniInt(FILE *file); // Inicjalizuje nowy stos
 
 void pushMiniInt(MiniIntStack* stack, short value); // Dodaje wartość na wierzch stosu
 
