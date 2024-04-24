@@ -1,62 +1,48 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "int_stack.h"
-#include <stdlib.h>
-#include <stdio.h>
-
-#define BASE_SIZE 10
 
 // Inicjalizacja nowego stosu
-IntStack* initInt() {
-    IntStack* stack = (IntStack*)malloc(sizeof(IntStack)); // 
-
+IntStack* initInt(FILE *file) {
+    IntStack* stack = (IntStack*)malloc(sizeof(IntStack));
     if (stack == NULL) {
-        printf("Błąd alokacji pamięci");
-        exit(EXIT_FAILURE); // Nieudana alokacja pamięci
-    }
-    stack->top = -1; // Stos jest pusty
-   
-    stack->max_size = BASE_SIZE;
-    
-    stack->array = (int*)malloc(stack->max_size * sizeof(int));
-    
-    
-    if (stack->array == NULL) {
-        printf("Błąd alokacji pamięci");
-        free(stack); // Zwolnij pamięć przydzieloną dla struktury stosu, jeśli nie można przydzielić pamięci na elementy
+        fprintf(stderr, "Błąd alokacji pamięci dla stosu.\n");
         exit(EXIT_FAILURE);
     }
-    
-
+    stack->index = 0;
+    stack->file = file;
     return stack;
 }
 
 // Dodawanie elementu do stosu
 void pushInt(IntStack* stack, int value) {
-
-    if (stack->top == stack->max_size - 1) { // Jeśli potrzeba więcej miejsca
-        stack->max_size *= 2; // Podwajamy rozmiar tablicy
-
-        stack->array = (int*)realloc(stack->array, stack->max_size * sizeof(int));
-        
-        if (stack->array == NULL) {
-            exit(EXIT_FAILURE); // Nieudana realokacja pamięci
-        }
+    if (stack == NULL) {
+        fprintf(stderr, "Błąd: Stos niezainicjalizowany.\n");
+        exit(EXIT_FAILURE);
     }
-
-    stack->array[++stack->top] = value; // Dodajemy element na stos
+    fseek(stack->file, 0, SEEK_END);
+    fprintf(stack->file, "%7d\n", value);
 }
 
 // Usuwanie elementu ze stosu
 int removeInt(IntStack* stack) {
-    if (stack->top == -1) { // Jeśli stos jest pusty
-        return -1; 
+    if (stack == NULL) {
+        fprintf(stderr, "Błąd: Stos niezainicjalizowany.\n");
+        exit(EXIT_FAILURE);
     }
-    return stack->array[stack->top--]; 
+    fseek(stack->file, stack->index, SEEK_SET);
+    int data;
+    if (fscanf(stack->file, "%d", &data) != 1) {
+        fprintf(stderr, "Błąd odczytu danych ze stosu.\n");
+        exit(EXIT_FAILURE);
+    }
+    stack->index = ftell(stack->file);
+    return data;
 }
 
 // Zwalnianie pamięci stosu
 void freeInt(IntStack* stack) {
-    free(stack->array); 
-    free(stack); 
+    if (stack != NULL) {
+        free(stack);
+    }
 }

@@ -133,7 +133,8 @@ int runDFS(FILE* maze,MazeDim dims) {
 
 
 
-    FILE *stack = fopen("temp.txt", "w+");
+    FILE *stack = fopen("tempC.txt", "w+");
+    FILE *stackInt = fopen("tempInt.txt", "w+");
 
     //komórka którą algorytm wybierze jako następną
     int nextCell;
@@ -143,7 +144,7 @@ int runDFS(FILE* maze,MazeDim dims) {
 
     // inicjalizuje stosy
     CharStack *allMoves = createCharStack(stack);
-    IntStack *nodes = initInt();
+    IntStack *nodes = initInt(stackInt);
     MiniIntStack *pathLens = initMiniInt();
     
 
@@ -174,21 +175,19 @@ int runDFS(FILE* maze,MazeDim dims) {
         currMove = move(maze, directions, &nextCell, currCell, &routesCount, dims.columns);
         switch(routesCount) {
             case 0:
-                
                 currCell = removeInt(nodes);
                 popCharMultiple(allMoves, currPathLen);
                 currPathLen = removeMiniInt(pathLens);
                 break;
             case 1:
-                
                 pushChar(allMoves, currMove);
                 currCell = nextCell;
                 writeCell(maze, currCell, dims.columns, '-');
                 currPathLen++;
                 break;
             default:
-
                 pushInt(nodes, currCell);
+                printf("%d\n", currCell);
                 pushMiniInt(pathLens, currPathLen);
                 currPathLen = 1;
                 currCell = nextCell;
@@ -224,6 +223,7 @@ int runDFS(FILE* maze,MazeDim dims) {
     fclose(maze);
     fclose(mazeWithPath);
     fclose(stack);
+    fclose(stackInt);
     
     return movesCount;
 

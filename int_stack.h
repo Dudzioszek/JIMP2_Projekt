@@ -1,17 +1,15 @@
 #include <stdbool.h>
 
 
-
 // Definicja typu dla stosu liczbowego
 typedef struct {
-    int *array; // Tablica na elementy stosu
-    int top; // Wskaźnik na wierzchołek stosu
-    int max_size; // Rozmiar stosu
+    FILE *file;
+    int index;
 } IntStack;
 
 // Prototypy funkcji dla stosu
 
-IntStack* initInt(); // 
+IntStack* initInt(FILE*); // 
 
 void pushInt(IntStack* stack, int value); // 
 
