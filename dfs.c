@@ -204,7 +204,7 @@ int runDFS(FILE* maze,MazeDim dims) {
     printf("Znaleziono sciezke od dlugosci: %d\n", movesCount);
 
     // Usuwam z pliku ścieżkę
-    restoreFile(maze);
+    restoreFileDFS(maze);
     writeCell(maze, dims.start, dims.columns, 'P');
     writeCell(maze, dims.end, dims.columns, 'K');
 

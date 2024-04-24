@@ -116,7 +116,7 @@ int runBFS(FILE* maze,MazeDim dims) {
     translateSteps("output/krokiTemp.txt",  OUT, counter);
     printf("Znaleziono sciezke od dlugosci: %d\n", counter);
     //Usuwam znaki wypisane przez algorytm
-    restoreFile(maze);
+    restoreFileBFS(maze);
     writeCell(maze, dims.start, dims.columns, 'P');
     writeCell(maze, dims.end, dims.columns, 'K');
     //Wypełniam P i K w maze

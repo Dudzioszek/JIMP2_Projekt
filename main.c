@@ -72,7 +72,5 @@ int main(int argc, char *argv[]) {
     } 
 
     writeMazeToBinary(textFilePath, binFilePath, moves_count, dims);
-
-
     return 0;
 }

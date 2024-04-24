@@ -98,7 +98,19 @@ void copyFile(FILE *sourceFile, FILE *destinationFile) {
 
 
 // Funkcja przywracająca oryginalny plik z labiryntem
-void restoreFile(FILE *file) {
+void restoreFileDFS(FILE *file) {
+    rewind(file);
+    char znak;
+    while ((znak = fgetc(file)) != EOF) {
+        if (znak == '-') {
+            fseek(file, -1, SEEK_CUR); // Przesuwa wskaźnik pliku o jeden bajt wstecz
+            fputc(' ', file); // Zapisuje pusty znak w miejscu wystąpienia '-'
+        }
+    }
+}
+
+// Funkcja przywracająca oryginalny plik z labiryntem
+void restoreFileBFS(FILE *file) {
     rewind(file);
     char znak;
     while ((znak = fgetc(file)) != EOF) {
@@ -108,5 +120,4 @@ void restoreFile(FILE *file) {
         }
     }
 }
-
 
