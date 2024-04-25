@@ -42,7 +42,7 @@ Arguments parseArguments(int argc, char* argv[]) {
     Arguments args = { .fileName = "maze.txt", .algorithm = "dfs", .save_way = false }; // Domyślne wartości
 
     int opt;
-    while ((opt = getopt(argc, argv, "n:a:p:w")) != -1) {
+    while ((opt = getopt(argc, argv, "n:a:p:w:b")) != -1) {
         switch (opt) {
             case 'n':
                 {
@@ -77,6 +77,10 @@ Arguments parseArguments(int argc, char* argv[]) {
 
             case 'w':
                 args.save_way = true;
+                break;
+
+            case 'b':
+                args.save_binary = true;
                 break;
             
             default:

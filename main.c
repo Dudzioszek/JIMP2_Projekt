@@ -71,6 +71,9 @@ int main(int argc, char *argv[]) {
         moves_count = runBFS(maze,dims,args);
     } 
 
-    writeMazeToBinary(textFilePath, binFilePath, moves_count, dims);
+    if(args.save_binary) { // jeśli użytkownik chce zapisać labirynt w formacie binarnym
+
+        writeMazeToBinary(textFilePath, binFilePath, moves_count, dims);
+    }
     return 0;
 }

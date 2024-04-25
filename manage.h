@@ -10,6 +10,7 @@ typedef struct {
     char* fileName;
     char* algorithm;
     bool save_way;
+    bool save_binary;
 } Arguments;
 
 // Funkcja sprawdzająca czy plik istnieje
