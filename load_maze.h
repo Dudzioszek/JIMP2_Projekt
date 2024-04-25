@@ -30,5 +30,6 @@ void writeCell(FILE*, int , int , char );
 void copyFile(FILE *, FILE *);
 void restoreFileDFS(FILE*);
 void restoreFileBFS(FILE*);
+void RemoveCharFile(FILE *file, char additionalChar);
 
 #endif
