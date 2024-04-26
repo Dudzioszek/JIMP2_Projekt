@@ -73,6 +73,8 @@ Arguments parseArguments(int argc, char* argv[]) {
                 printf("\n#POMOC#\n");
                 printf("  -n <nazwa_pliku>    Określ nazwę pliku z labiryntem, musi być w folderze 'source' (domyślnie: maze.txt)\n");
                 printf("  -a <algorytm>       Wybierz algorytm do rozwiązania labiryntu (dfs lub bfs, domyślnie: dfs)\n");
+                printf("  -b                  Ta flaga sprawia że algorytm zapisuje ścieżkę również binarnie\n");
+                printf("  -w                  Ta flaga sprawia że algorytm zapisuje ścieżkę w labiryncie wyjściowym w folderze output\n");
                 exit(EXIT_SUCCESS);
 
             case 'w':
