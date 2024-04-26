@@ -41,8 +41,10 @@ int checkFileType(const char *filePath) {
 Arguments parseArguments(int argc, char* argv[]) {
     Arguments args = { .fileName = "maze.txt", .algorithm = "dfs", .save_way = false }; // Domyślne wartości
 
+
+
     int opt;
-    while ((opt = getopt(argc, argv, "n:a:pw:b")) != -1) {
+    while ((opt = getopt(argc, argv, "n:a:wbp")) != -1) {
         switch (opt) {
             case 'n':
                 {
