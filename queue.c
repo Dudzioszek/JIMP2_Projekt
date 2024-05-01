@@ -98,8 +98,8 @@ int printMovesq(FILE *maze, const char* filename, int start, int end, int col) {
                 break;
             case '-':
                 fprintf(out, "%c\n", moves[i]);
-                cell += opt[i];
                 writeCell(maze, cell, col, '*');
+                cell += opt[i];
                 counter++;
                 move = moves[i];
                 k = 0;

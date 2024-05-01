@@ -7,7 +7,11 @@
 #define OUT OUT_DIR "kroki.txt"
 #define OUTPATHFILE "output/labiryntZeSciezka.txt"
 
-
+void breakPoint(int cell) {
+    int test;
+    printf("currCell: %d\n", cell);
+    scanf("%d", &test);
+}
 
 void restoreFile(FILE *file, char additionalChar) {
     rewind(file);
@@ -70,6 +74,7 @@ char moveb(FILE *file, Queue *queue, int *routesPossible, int cell, int col) {
 
     for (int i = 0; i <= 3; i++) {
         if (readCell(file, opt[i], col) == ' ') {
+            writeCell(file, opt[i], col, '-');
             push(queue, opt[i]);
             (*routesPossible)++;
             }
@@ -82,9 +87,7 @@ char moveb(FILE *file, Queue *queue, int *routesPossible, int cell, int col) {
 }
 
 
-int runBFS(FILE* maze,MazeDim dims, Arguments args) {
-
-    
+int runBFS(FILE* maze, MazeDim dims, Arguments args) {
 
     FILE *temp = fopen("temp.txt", "w+");
 
@@ -102,16 +105,13 @@ int runBFS(FILE* maze,MazeDim dims, Arguments args) {
 
     //obecna komórka
     int currCell = dims.start;
-    
     char currMove = firstMoveb(maze, &currCell, dims.columns, mazeSize);
     
     //kiedy program odwiedzi komórkę to zmienia ją z ' ' na '-'
-    //writeCell(maze, currCell, cols, '-');
     writeCell(maze, dims.start, dims.columns, '-');
     writeCell(maze, dims.end, dims.columns, ' ');
 
     printf("Rozpoczynam algorytm BFS...\n");
-
     while(currCell != dims.end) {
         //zbieram dane tj.: możliwe ruchy, ich liczba, współrzędne każdego z nich
         currMove = moveb(maze, queue, &routesCount, currCell, dims.columns);
@@ -122,7 +122,6 @@ int runBFS(FILE* maze,MazeDim dims, Arguments args) {
         currCell = pop(queue);
     }
     
-
     //Zwalniam pamięć
     deleteQueue(queue);
     int counter = printMovesq(maze, "output/krokiTemp.txt", dims.start, dims.end, dims.columns);
@@ -130,7 +129,6 @@ int runBFS(FILE* maze,MazeDim dims, Arguments args) {
     printf("Znaleziono sciezke od dlugosci: %d\n", counter);
 
     if(args.save_way){ // jeśli użytkownik chce zapisać labirynt z wyznaczoną ścieżką
-        
         restoreFile(maze, '*');
         FILE* outWithPath = fopen(OUTPATHFILE, "w+");
         copyFile(maze, outWithPath);
